@@ -13,7 +13,8 @@ logFile.write('Path to main folders created\n')
 
 def sortEngine():
 	files = os.listdir(unsortedPhotos)
-	print('Here are ' + str(len(files)) + ' files.')
+	print('Here are ' + str(len(files)) + ' unsorted files.')
+
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 logFile.write('Start to look for your photos? (y/n)\n')
