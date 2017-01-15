@@ -4,36 +4,41 @@ import os, shutil, sys
 
 
 logFile = open('D:\\PythonPhoto\\sortedPhoto\\logFile.txt', 'w')
-logFile.write('Program started. Log file created\n')
+logFile.write('Program started. Log file created\n\n')
 
 
 unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhoto')
 sortedPhotos = ('D:\\PythonPhoto\\sortedPhoto')
-logFile.write('Path to main folders created\n')
+logFile.write('Path to main folders created\n\n')
 
 def sortEngine():
+	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
+		'\n\n')
 	files = os.listdir(unsortedPhotos)
+
+	logFile.write('Print that in ' + unsortedPhotos + ' are ' 
+		+ str(len(files)) + ' files\n\n')
 	print('Here are ' + str(len(files)) + ' unsorted files.')
 
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
-logFile.write('Start to look for your photos? (y/n)\n')
+logFile.write('Start to look for your photos? (y/n)\n\n')
 
 while True:
 	if start == 'y':
-		logFile.write('Got "y".\n')
+		logFile.write('Got "y".\n\n')
 		sortEngine()
 		break
 	elif start == 'n':
-		logFile.write('Got "n". Exit script.\n')
+		logFile.write('Got "n". Exit script.\n\n')
 		print('Goodbye')
 		sys.exit()
 	else:
-		logFile.write('Got wrong input. Ask again...\n')
+		logFile.write('Got wrong input. Ask again...\n\n')
 		print('Input error. You should type in y or n')	
 		continue
 
-
-		
+logFile.write('Program has reached end. Closing logFile.')
+logFile.close()		
 
 
