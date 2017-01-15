@@ -11,6 +11,19 @@ unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhoto')
 sortedPhotos = ('D:\\PythonPhoto\\sortedPhoto')
 logFile.write('Path to main folders created\n\n')
 
+def sizes(files):
+	logFile.write('Start to figuring out total size of unsorted files\n\n')
+
+	totalSize = 0
+	for file in files:
+		size = os.path.getsize(os.path.join(unsortedPhotos, file))
+		totalSize += size
+
+	logFile.write('Total size of ' + str(len(files)) + ' files is ' 
+		+ str(totalSize / 1024 /1024) + ' MB\n\n')
+	print('Total size of ' + str(len(files)) + ' files is ' 
+		+ str(totalSize / 1024 /1024) + ' MB\n')
+
 def sortEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
 		'\n\n')
@@ -19,6 +32,9 @@ def sortEngine():
 	logFile.write('Print that in ' + unsortedPhotos + ' are ' 
 		+ str(len(files)) + ' files\n\n')
 	print('Here are ' + str(len(files)) + ' unsorted files.')
+	
+	logFile.write('Call sizes()\n\n')
+	sizes(files)
 
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
@@ -26,7 +42,7 @@ logFile.write('Start to look for your photos? (y/n)\n\n')
 
 while True:
 	if start == 'y':
-		logFile.write('Got "y".\n\n')
+		logFile.write('Got "y". Call sortEngine()\n\n')
 		sortEngine()
 		break
 	elif start == 'n':
