@@ -3,12 +3,12 @@
 import os, shutil, sys
 
 
-logFile = open('D:\\PythonPhoto\\sortedPhoto\\logFile.txt', 'w')
+logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
 logFile.write('Program started. Log file created\n\n')
 
 
 unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
-sortedPhotos = ('D:\\PythonPhoto\\sortedPhoto')
+sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
 logFile.write('Path to main folders created\n\n')
 
 def sizes(files):
@@ -39,15 +39,27 @@ def sortEngine():
 	sizes(files)
 
 	png = 0
-	logFile.write('Start count PNG files...\n')
+	jpg = 0
+	other = 0
+	logFile.write('Start to count PNG files...\n')
 	for item in os.listdir(unsortedPhotos):
-		if item.endswith('.PNG'):
+		if item.endswith('.PNG') or item.endswith('.png'):
 			logFile.write(str(item) + '\n')
 			png += 1
-	logFile.write('\nThe total amount of png files is ' + str(png) + '\n')	
-	print('\nThe total amount of png files is ' + str(png) + '\n')	
+		elif item.endswith('.JPG') or item.endswith('.jpg') or item.endswith('.JPEG'):
+			logFile.write(item + '\n')
+			jpg += 1
+		else:
+			other += 1
+			print(item)
 
 
+	logFile.write('\nThe total amount of JPG files is ' + str(jpg) + '\n')	
+	print('\nThe total amount of JPG files is ' + str(jpg) + '\n')
+	logFile.write('\nThe total amount of PNG files is ' + str(png) + '\n')	
+	print('\nThe total amount of PNG files is ' + str(png) + '\n')
+	logFile.write('\nThe total amount of other files is ' + str(other) + '\n')	
+	print('\nThe total amount of other files is ' + str(other) + '\n')
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 logFile.write('Start to look for your photos? (y/n)\n\n')
