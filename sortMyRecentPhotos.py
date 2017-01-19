@@ -7,7 +7,7 @@ logFile = open('D:\\PythonPhoto\\sortedPhoto\\logFile.txt', 'w')
 logFile.write('Program started. Log file created\n\n')
 
 
-unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhoto')
+unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
 sortedPhotos = ('D:\\PythonPhoto\\sortedPhoto')
 logFile.write('Path to main folders created\n\n')
 
@@ -37,6 +37,16 @@ def sortEngine():
 	
 	logFile.write('Call sizes()\n\n')
 	sizes(files)
+
+	png = 0
+	logFile.write('Start count PNG files...\n')
+	for item in os.listdir(unsortedPhotos):
+		if item.endswith('.PNG'):
+			logFile.write(str(item) + '\n')
+			png += 1
+	logFile.write('\nThe total amount of png files is ' + str(png) + '\n')	
+	print('\nThe total amount of png files is ' + str(png) + '\n')	
+
 
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
