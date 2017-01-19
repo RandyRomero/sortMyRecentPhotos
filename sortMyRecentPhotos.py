@@ -38,28 +38,34 @@ def sortEngine():
 	logFile.write('Call sizes()\n\n')
 	sizes(files)
 
-	png = 0
-	jpg = 0
-	other = 0
+	pngCntr = 0
+	jpgCntr = 0
+	MP4_3GPCntr = 0
+	otherCntr = 0
 	logFile.write('Start to count PNG files...\n')
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
 			logFile.write(str(item) + '\n')
-			png += 1
+			pngCntr += 1
 		elif item.endswith('.JPG') or item.endswith('.jpg') or item.endswith('.JPEG'):
 			logFile.write(item + '\n')
-			jpg += 1
+			jpgCntr += 1
+		elif item.endswith('.MP4') or item.endswith('.3GP'):
+			logFile.write(item)
+			MP4_3GPCntr += 1
 		else:
-			other += 1
+			otherCntr += 1
 			print(item)
 
 
-	logFile.write('\nThe total amount of JPG files is ' + str(jpg) + '\n')	
-	print('\nThe total amount of JPG files is ' + str(jpg) + '\n')
-	logFile.write('\nThe total amount of PNG files is ' + str(png) + '\n')	
-	print('\nThe total amount of PNG files is ' + str(png) + '\n')
-	logFile.write('\nThe total amount of other files is ' + str(other) + '\n')	
-	print('\nThe total amount of other files is ' + str(other) + '\n')
+	logFile.write('\nThe total amount of JPG files is ' + str(jpgCntr) + '\n')	
+	print('\nThe total amount of JPG files is ' + str(jpgCntr) + '\n')
+	logFile.write('\nThe total amount of PNG files is ' + str(pngCntr) + '\n')	
+	print('\nThe total amount of PNG files is ' + str(pngCntr) + '\n')
+	logFile.write('\nThe total amount of video files is ' + str(MP4_3GPCntr) + '\n')	
+	print('\nThe total amount of video files is ' + str(MP4_3GPCntr) + '\n')
+	logFile.write('\nThe total amount of other files is ' + str(otherCntr) + '\n')	
+	print('\nThe total amount of other files is ' + str(otherCntr) + '\n')
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 logFile.write('Start to look for your photos? (y/n)\n\n')
