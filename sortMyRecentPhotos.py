@@ -18,11 +18,13 @@ def sizes(files):
 	for file in files:
 		size = os.path.getsize(os.path.join(unsortedPhotos, file))
 		totalSize += size
+	totalSize = totalSize / 1024 / 1024
 
 	logFile.write('Total size of ' + str(len(files)) + ' files is ' 
-		+ str(totalSize / 1024 /1024) + ' MB\n\n')
+		+ str("%0.2f" % totalSize) + ' MB\n\n')
 	print('Total size of ' + str(len(files)) + ' files is ' 
-		+ str(totalSize / 1024 /1024) + ' MB\n')
+		+ str("%0.2f" % totalSize) + ' MB\n')
+	#TODO truncate digits after comma
 
 def sortEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
