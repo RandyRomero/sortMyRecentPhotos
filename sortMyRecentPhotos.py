@@ -45,13 +45,10 @@ def sortEngine():
 	logFile.write('Start to count PNG files...\n')
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
-			logFile.write(str(item) + '\n')
 			pngCntr += 1
 		elif item.endswith('.JPG') or item.endswith('.jpg') or item.endswith('.JPEG'):
-			logFile.write(item + '\n')
 			jpgCntr += 1
 		elif item.endswith('.MP4') or item.endswith('.3GP'):
-			logFile.write(item)
 			MP4_3GPCntr += 1
 		else:
 			otherCntr += 1
