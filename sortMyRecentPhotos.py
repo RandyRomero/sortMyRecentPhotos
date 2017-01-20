@@ -38,11 +38,9 @@ def sortEngine():
 	sizes(files)
 
 
-	jpgList = [] 
-	pngList = []
-	videoList = []
-	otherList = []
-	
+	jpgList, pngList, videoList, otherList = ([] for i in range(4))
+	#the way to declare multiple lists
+
 	logFile.write('Start to count PNG files...\n')
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
