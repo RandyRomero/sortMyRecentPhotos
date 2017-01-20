@@ -13,18 +13,14 @@ logFile.write('Path to main folders created\n\n')
 ################################## sizes ###############################	
 
 def sizes(files):
-	logFile.write('Start to figuring out total size of unsorted files\n\n')
-
+	
 	totalSize = 0
 	for file in files:
 		size = os.path.getsize(os.path.join(unsortedPhotos, file))
 		totalSize += size
-	totalSize = totalSize / 1024 / 1024
+	return totalSize / 1024 / 1024
 
-	logFile.write('Total size of ' + str(len(files)) + ' files is ' 
-		+ str("%0.2f" % totalSize) + ' MB\n\n')
-	print('\nTotal size of ' + str(len(files)) + ' files is ' 
-		+ str("%0.2f" % totalSize) + ' MB\n')
+######################### log files by extention ###############################	
 
 def printLogFilesByExt(ilk, listFiles):
 	logFile.write('\nThe total amount of ' + ilk +' files is ' + 
@@ -49,10 +45,18 @@ def sortEngine():
 		+ unsortedPhotos + '\n\n')
 	print('\nHere are ' + str(len(files)) + ' unsorted files.')
 	
+	###figuring out total size of all unsorted files###
+
 	logFile.write('Call sizes()\n\n')
-	sizes(files)
+	logFile.write('Start to figuring out total size of unsorted files\n\n')
+	totalSize = sizes(files)
+	logFile.write('Total size of ' + str(len(files)) + ' files is ' 
+		+ str("%0.2f" % totalSize) + ' MB\n\n')
+	print('\nTotal size of ' + str(len(files)) + ' files is ' 
+		+ str("%0.2f" % totalSize) + ' MB\n')
 
-
+	###sort out files by extentions###
+	
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
 	#the way to declare multiple lists
 
