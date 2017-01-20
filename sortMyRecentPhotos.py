@@ -81,10 +81,11 @@ def sortEngine():
 
 ########################  Begining of the program  #######################
 
-start = input('\nStart to look for your photos? (y/n) Your answer is: ')
+
 logFile.write('Start to look for your photos? (y/n)\n\n')
 
 while True:
+	start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call sortEngine()\n\n')
 		sortEngine()
