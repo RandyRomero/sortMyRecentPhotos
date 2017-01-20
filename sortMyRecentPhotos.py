@@ -23,10 +23,12 @@ def sizes(files):
 ######################### log files by extention ###############################	
 
 def printLogFilesByExt(ilk, listFiles):
-	logFile.write('\nThe total amount of ' + ilk +' files is ' + 
+	logFile.write('\nTotal amount of ' + ilk +' files is ' + 
 		str(len(listFiles)))	
-	print('The total amount of ' + ilk + ' files is ' 
-		+ str(len(listFiles)) + '\n')
+	print('Total amount of ' + ilk + ' files is ' 
+		+ str(len(listFiles)))
+	print('Total size of ' + ilk + ' files is ' + 
+		str('%0.2f' % sizes(listFiles)) + ' MB\n')
 	logFile.write('\nList of ' + ilk + ' files:\n')	
 	if len(listFiles) < 1:
 		logFile.write('empty\n')
@@ -80,6 +82,8 @@ def sortEngine():
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
+
+
 	#prints and logs to file list and amount of files by their extention	 
 
 
