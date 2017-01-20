@@ -25,11 +25,11 @@ def sizes(files):
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
 def printLogFilesByExt(ilk, listFiles):
-	logFile.write('\nThe total amount of ' + ilk +' files is ' + 
+	logFile.write('The total amount of ' + ilk +' files is ' + 
 		str(len(listFiles)) + '\n')	
-	print('\nThe total amount of ' + ilk + ' files is ' 
+	print('The total amount of ' + ilk + ' files is ' 
 		+ str(len(listFiles)) + '\n')
-	logFile.write('\n\nList of ' + ilk + ' files:\n')	
+	logFile.write('\nList of ' + ilk + ' files:\n')	
 	if len(listFiles) < 1:
 		logFile.write('empty\n')
 	else:
@@ -67,12 +67,14 @@ def sortEngine():
 
 	extLists = collections.OrderedDict([('JPG', jpgList), ('PNG', pngList), 
 		('video', videoList), ('other', otherList)])
+	#use OrderedDict to preserve insertion order. Python 3.6 default dict can
+	#do it from box but I want to keep compatibility with older versions
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
 
 
-	
+########################  Begining of the program  #######################
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 logFile.write('Start to look for your photos? (y/n)\n\n')
@@ -91,7 +93,7 @@ while True:
 		print('Input error. You should type in y or n')	
 		continue
 
-logFile.write('Program has reached end. Closing logFile.')
+logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()		
 
 
