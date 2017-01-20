@@ -24,7 +24,6 @@ def sizes(files):
 		+ str("%0.2f" % totalSize) + ' MB\n\n')
 	print('Total size of ' + str(len(files)) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n')
-	#TODO truncate digits after comma
 
 def sortEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
@@ -38,31 +37,33 @@ def sortEngine():
 	logFile.write('Call sizes()\n\n')
 	sizes(files)
 
-	pngCntr = 0
-	jpgCntr = 0
-	MP4_3GPCntr = 0
-	otherCntr = 0
+
+	jpgList = [] 
+	pngList = []
+	videoList = []
+	otherList = []
+	
 	logFile.write('Start to count PNG files...\n')
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
-			pngCntr += 1
+			pngList.append(item)
 		elif item.endswith('.JPG') or item.endswith('.jpg') or item.endswith('.JPEG'):
-			jpgCntr += 1
+			jpgList.append(item)
 		elif item.endswith('.MP4') or item.endswith('.3GP'):
-			MP4_3GPCntr += 1
+			videoList.append(item)
 		else:
-			otherCntr += 1
+			otherList.append(item)
 			print(item)
 
 
-	logFile.write('\nThe total amount of JPG files is ' + str(jpgCntr) + '\n')	
-	print('\nThe total amount of JPG files is ' + str(jpgCntr) + '\n')
-	logFile.write('\nThe total amount of PNG files is ' + str(pngCntr) + '\n')	
-	print('\nThe total amount of PNG files is ' + str(pngCntr) + '\n')
-	logFile.write('\nThe total amount of video files is ' + str(MP4_3GPCntr) + '\n')	
-	print('\nThe total amount of video files is ' + str(MP4_3GPCntr) + '\n')
-	logFile.write('\nThe total amount of other files is ' + str(otherCntr) + '\n')	
-	print('\nThe total amount of other files is ' + str(otherCntr) + '\n')
+	logFile.write('\nThe total amount of JPG files is ' + str(len(jpgList)) + '\n')	
+	print('\nThe total amount of JPG files is ' + str(len(jpgList)) + '\n')
+	logFile.write('\nThe total amount of PNG files is ' + str(len(pngList)) + '\n')	
+	print('\nThe total amount of PNG files is ' + str(len(pngList)) + '\n')
+	logFile.write('\nThe total amount of video files is ' + str(len(videoList)) + '\n')	
+	print('\nThe total amount of video files is ' + str(len(videoList)) + '\n')
+	logFile.write('\nThe total amount of other files is ' + str(len(otherList)) + '\n')	
+	print('\nThe total amount of other files is ' + str(len(otherList)) + '\n')
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 logFile.write('Start to look for your photos? (y/n)\n\n')
