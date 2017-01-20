@@ -10,6 +10,8 @@ unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
 sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
 logFile.write('Path to main folders created\n\n')
 
+################################## sizes ###############################	
+
 def sizes(files):
 	logFile.write('Start to figuring out total size of unsorted files\n\n')
 
@@ -35,6 +37,8 @@ def printLogFilesByExt(ilk, listFiles):
 	else:
 		for file in listFiles:
 			logFile.write(file + '\n')
+
+############################### sortEngine  ##############################			
 
 def sortEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
@@ -72,6 +76,7 @@ def sortEngine():
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
+	#prints and logs to file list and amount of files by their extention	 
 
 
 ########################  Begining of the program  #######################
