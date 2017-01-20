@@ -27,8 +27,8 @@ def sizes(files):
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
 def printLogFilesByExt(ilk, listFiles):
-	logFile.write('The total amount of ' + ilk +' files is ' + 
-		str(len(listFiles)) + '\n')	
+	logFile.write('\nThe total amount of ' + ilk +' files is ' + 
+		str(len(listFiles)))	
 	print('The total amount of ' + ilk + ' files is ' 
 		+ str(len(listFiles)) + '\n')
 	logFile.write('\nList of ' + ilk + ' files:\n')	
@@ -45,8 +45,8 @@ def sortEngine():
 		'\n\n')
 	files = os.listdir(unsortedPhotos)
 
-	logFile.write('Print that in ' + unsortedPhotos + ' are ' 
-		+ str(len(files)) + ' files\n\n')
+	logFile.write('There are ' + str(len(files)) + ' files in ' 
+		+ unsortedPhotos + '\n\n')
 	print('\nHere are ' + str(len(files)) + ' unsorted files.')
 	
 	logFile.write('Call sizes()\n\n')
