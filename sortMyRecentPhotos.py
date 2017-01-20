@@ -1,6 +1,6 @@
 #!python3 
 
-import os, shutil, sys
+import os, shutil, sys, collections
 
 
 logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
@@ -56,8 +56,8 @@ def sortEngine():
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
-		elif item.endswith('.JPG') or item.endswith('.jpg') 
-			or item.endswith('.JPEG'):
+		elif (item.endswith('.JPG') or item.endswith('.jpg') 
+			or item.endswith('.JPEG')):
 			jpgList.append(item)
 		elif item.endswith('.MP4') or item.endswith('.3GP'):
 			videoList.append(item)
@@ -65,8 +65,8 @@ def sortEngine():
 			otherList.append(item)
 			print(item)
 
-	extLists = {'JPG': jpgList, 'PNG': pngList, 'video': videoList, 
-				'other': otherList}
+	extLists = collections.OrderedDict([('JPG', jpgList), ('PNG', pngList), 
+		('video', videoList), ('other', otherList)])
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
