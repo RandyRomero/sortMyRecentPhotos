@@ -23,7 +23,7 @@ def sizes(files):
 
 	logFile.write('Total size of ' + str(len(files)) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n\n')
-	print('Total size of ' + str(len(files)) + ' files is ' 
+	print('\nTotal size of ' + str(len(files)) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
 def printLogFilesByExt(ilk, listFiles):
@@ -47,7 +47,7 @@ def sortEngine():
 
 	logFile.write('Print that in ' + unsortedPhotos + ' are ' 
 		+ str(len(files)) + ' files\n\n')
-	print('Here are ' + str(len(files)) + ' unsorted files.')
+	print('\nHere are ' + str(len(files)) + ' unsorted files.')
 	
 	logFile.write('Call sizes()\n\n')
 	sizes(files)
@@ -56,7 +56,7 @@ def sortEngine():
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
 	#the way to declare multiple lists
 
-	logFile.write('Start to sort files by extension...\n')
+	logFile.write('Start to sort files by extension...\n\n')
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
