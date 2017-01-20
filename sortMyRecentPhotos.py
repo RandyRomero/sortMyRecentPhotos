@@ -25,6 +25,18 @@ def sizes(files):
 	print('Total size of ' + str(len(files)) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
+def printLogFilesByExt(ilk, listFiles):
+	logFile.write('\nThe total amount of ' + ilk +' files is ' + 
+		str(len(listFiles)) + '\n')	
+	print('\nThe total amount of ' + ilk + ' files is ' 
+		+ str(len(listFiles)) + '\n')
+	logFile.write('\n\nList of ' + ilk + ' files:\n')	
+	if len(listFiles) < 1:
+		logFile.write('empty\n')
+	else:
+		for file in listFiles:
+			logFile.write(file + '\n')
+
 def sortEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
 		'\n\n')
@@ -53,43 +65,14 @@ def sortEngine():
 			otherList.append(item)
 			print(item)
 
+	extLists = {'JPG': jpgList, 'PNG': pngList, 'video': videoList, 
+				'other': otherList}
+
+	for k,v in extLists.items():
+		 printLogFilesByExt(k,v)
+
+
 	
-	
-	logFile.write('\nThe total amount of JPG files is ' + str(len(jpgList)) + '\n')	
-	print('\nThe total amount of JPG files is ' + str(len(jpgList)) + '\n')
-	logFile.write('\n\nList of JPG files:\n')	
-	if len(jpgList) < 1:
-		logFile.write('empty\n')
-	else:
-		for file in jpgList:
-			logFile.write(file + '\n')
-
-	logFile.write('\nThe total amount of PNG files is ' + str(len(pngList)) + '\n')	
-	print('\nThe total amount of PNG files is ' + str(len(pngList)) + '\n')
-	logFile.write('\nList of PNG files:\n')
-	if len(pngList) < 1:
-		logFile.write('empty\n')
-	else:
-		for file in pngList:
-			logFile.write(file + '\n')
-
-	logFile.write('\nThe total amount of video files is ' + str(len(videoList)) + '\n')	
-	print('\nThe total amount of video files is ' + str(len(videoList)) + '\n')
-	logFile.write('\n\nList of video files:\n')
-	if len(videoList) < 1:
-		logFile.write('empty\n')
-	else:
-		for file in videoList:
-			logFile.write(file + '\n')
-
-	logFile.write('\nThe total amount of other files is ' + str(len(otherList)) + '\n')	
-	print('\nThe total amount of other files is ' + str(len(otherList)) + '\n')
-	logFile.write('\n\nList of other files:\n')			
-	if len(otherList) < 1:
-			logFile.write('empty\n')
-	else:		
-		for file in otherList:
-			logFile.write(file + '\n')
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 logFile.write('Start to look for your photos? (y/n)\n\n')
