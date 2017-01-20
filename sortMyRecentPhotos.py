@@ -6,7 +6,6 @@ import os, shutil, sys
 logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
 logFile.write('Program started. Log file created\n\n')
 
-
 unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
 sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
 logFile.write('Path to main folders created\n\n')
@@ -57,7 +56,8 @@ def sortEngine():
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
-		elif item.endswith('.JPG') or item.endswith('.jpg') or item.endswith('.JPEG'):
+		elif item.endswith('.JPG') or item.endswith('.jpg') 
+			or item.endswith('.JPEG'):
 			jpgList.append(item)
 		elif item.endswith('.MP4') or item.endswith('.3GP'):
 			videoList.append(item)
