@@ -41,7 +41,7 @@ def sortEngine():
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
 	#the way to declare multiple lists
 
-	logFile.write('Start to count PNG files...\n')
+	logFile.write('Start to sort files by extension...\n')
 	for item in os.listdir(unsortedPhotos):
 		if item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
@@ -53,15 +53,43 @@ def sortEngine():
 			otherList.append(item)
 			print(item)
 
-
+	
+	
 	logFile.write('\nThe total amount of JPG files is ' + str(len(jpgList)) + '\n')	
 	print('\nThe total amount of JPG files is ' + str(len(jpgList)) + '\n')
+	logFile.write('\n\nList of JPG files:\n')	
+	if len(jpgList) < 1:
+		logFile.write('empty\n')
+	else:
+		for file in jpgList:
+			logFile.write(file + '\n')
+
 	logFile.write('\nThe total amount of PNG files is ' + str(len(pngList)) + '\n')	
 	print('\nThe total amount of PNG files is ' + str(len(pngList)) + '\n')
+	logFile.write('\nList of PNG files:\n')
+	if len(pngList) < 1:
+		logFile.write('empty\n')
+	else:
+		for file in pngList:
+			logFile.write(file + '\n')
+
 	logFile.write('\nThe total amount of video files is ' + str(len(videoList)) + '\n')	
 	print('\nThe total amount of video files is ' + str(len(videoList)) + '\n')
+	logFile.write('\n\nList of video files:\n')
+	if len(videoList) < 1:
+		logFile.write('empty\n')
+	else:
+		for file in videoList:
+			logFile.write(file + '\n')
+
 	logFile.write('\nThe total amount of other files is ' + str(len(otherList)) + '\n')	
 	print('\nThe total amount of other files is ' + str(len(otherList)) + '\n')
+	logFile.write('\n\nList of other files:\n')			
+	if len(otherList) < 1:
+			logFile.write('empty\n')
+	else:		
+		for file in otherList:
+			logFile.write(file + '\n')
 
 start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 logFile.write('Start to look for your photos? (y/n)\n\n')
