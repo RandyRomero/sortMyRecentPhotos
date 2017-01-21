@@ -128,7 +128,10 @@ def sortByExtEngine():
 	#prints and logs to file list and amount of files by their extention	
 
 	for v in extLists.values():
+		if v == pngList:
+			continue
 		sortByMonth(v)
+	#split files by month (skip PNG)	
 
 
 ########################  Begining of the program  #######################
