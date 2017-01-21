@@ -69,8 +69,6 @@ def sortByMonth(fileList):
 		''', 
 		re.VERBOSE)
 
-	imageName = ''
-
 	for item in fileList:
 		mo = dateRegex.search(item)
 		if mo != None:
