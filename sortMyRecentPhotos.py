@@ -83,22 +83,52 @@ def sortByExtEngine():
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention	
 
+	for v in extLists.values():
+		sortByMonth(v)
 
 ############################# sort by month ##############################
 
 def sortByMonth(fileList):
+
+	logFile.write('Make list of month...')
+	january, february, march, april, may, june, july, august, september, october, november, december = ([] for i in range(12))
+
+	logFile.write('Make dict of lists of month...')
+	month = {}
+	month['01'] = january
+	month['02'] = february
+	month['03'] = march
+	month['04'] = april
+	month['05'] = may
+	month['06'] = june
+	month['07'] = july
+	month['08'] = august
+	month['09'] = september
+	month['10'] = october
+	month['11'] = november
+	month['12'] = december
+
+	logFile.write('Compile regex for dates in files...')
 	dateRegex = re.compile(r''' 
 		^((?:201[0-9]))- 		#year - Group 1
-		((?:0|1)(?:[0-9]))-		#month - Group 2
-		((?:[0-3])(?:[0-9]))	#day - Group 3
+		((?:0|1)(?:\d))-		#month - Group 2
+		((?:[0-3])(?:\d))	#day - Group 3
 		.*$ 					#all other symbols after
 		
 		''', 
 		re.VERBOSE)
 
-	for item in fileList:
-		
+	imageName = ''
 
+	for item in fileList:
+		mo = dateRegex.search(item)
+		if mo != None:
+			month[mo.group(2)].append(mo.group())
+
+	for k, v in month.items():
+		print('Content of ' + k + ' is: ')
+		print(v)
+		print('\n\n')
 
 
 ########################  Begining of the program  #######################
