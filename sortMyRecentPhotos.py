@@ -1,6 +1,6 @@
 #!python3 
 
-import os, shutil, sys, collections
+import os, shutil, sys, collections, re
 
 logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
 logFile.write('Program started. Log file created\n\n')
@@ -81,7 +81,24 @@ def sortByExtEngine():
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
-	#prints and logs to file list and amount of files by their extention	 
+	#prints and logs to file list and amount of files by their extention	
+
+
+############################# sort by month ##############################
+
+def sortByMonth(fileList):
+	dateRegex = re.compile(r''' 
+		^((?:201[0-9]))- 		#year - Group 1
+		((?:0|1)(?:[0-9]))-		#month - Group 2
+		((?:[0-3])(?:[0-9]))	#day - Group 3
+		.*$ 					#all other symbols after
+		
+		''', 
+		re.VERBOSE)
+
+	for item in fileList:
+		
+
 
 
 ########################  Begining of the program  #######################
@@ -108,3 +125,4 @@ logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()		
 
 
+# ^((?:201[0-9]))-((?:0|1)(?:[0-9]))-((?:[0-3])(?:[0-9])).*$
