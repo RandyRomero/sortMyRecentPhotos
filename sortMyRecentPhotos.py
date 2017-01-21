@@ -2,7 +2,6 @@
 
 import os, shutil, sys, collections
 
-
 logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
 logFile.write('Program started. Log file created\n\n')
 
@@ -36,9 +35,9 @@ def printLogFilesByExt(ilk, listFiles):
 		for file in listFiles:
 			logFile.write(file + '\n')
 
-############################### sortEngine  ##############################			
+############################### sortByExtEngine  ##############################			
 
-def sortEngine():
+def sortByExtEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
 		'\n\n')
 	files = os.listdir(unsortedPhotos)
@@ -82,8 +81,6 @@ def sortEngine():
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
-
-
 	#prints and logs to file list and amount of files by their extention	 
 
 
@@ -95,8 +92,8 @@ logFile.write('Start to look for your photos? (y/n)\n\n')
 while True:
 	start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 	if start == 'y':
-		logFile.write('Got "y". Call sortEngine()\n\n')
-		sortEngine()
+		logFile.write('Got "y". Call sortByExtEngine()\n\n')
+		sortByExtEngine()
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
