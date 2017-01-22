@@ -39,12 +39,12 @@ def printLogFilesByExt(ilk, listFiles):
 
 def sortByMonth(fileList):
 
-	logFile.write('Make list of month...')
+	logFile.write('Make list of month for ' + str(fileList) + '...\n\n')
 	january, february, march, april = ([] for i in range(4))
 	may, june, july, august = ([] for i in range(4))
 	september, october, november, december = ([] for i in range(4))
 
-	logFile.write('Make dict of lists of month...')
+	logFile.write('Make dict of lists of month...\n\n')
 	month = {}
 	month['01'] = january
 	month['02'] = february
@@ -59,7 +59,7 @@ def sortByMonth(fileList):
 	month['11'] = november
 	month['12'] = december
 
-	logFile.write('Compile regex for dates in files...')
+	logFile.write('Compile regex for dates in files...\n\n')
 	dateRegex = re.compile(r''' 
 		^((?:201[0-9]))- 		#year - Group 1
 		((?:0|1)(?:\d))-		#month - Group 2
