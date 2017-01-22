@@ -84,7 +84,9 @@ def sortByMonth(fileList):
 			logFile.write('Content of ' + k + ' is: \n')
 			for item in v:
 				logFile.write(item + '\n')
-			logFile.write('\n\n')			
+			logFile.write('\n\n')
+
+############################### sortByExtEngine  ##############################				
 
 ############################### sortByExtEngine  ##############################			
 
@@ -163,6 +165,14 @@ while True:
 
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()		
+
+
+
+#TODO comparison of sorted and unsorted in order to figure out
+#if sorting went without missing any file
+
+#TODO delete unsortedFiles by users submit after checking that unsorted 
+#sorted files are equal in total quatity and size
 
 
 # ^((?:201[0-9]))-((?:0|1)(?:[0-9]))-((?:[0-3])(?:[0-9])).*$
