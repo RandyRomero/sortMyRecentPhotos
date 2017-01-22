@@ -47,7 +47,7 @@ def sortByMonth(fileList):
 	#declare 12 lists fo each month
 
 	logFile.write('Make dict of lists of month...\n\n')
-	month = {}
+	month = collections.OrderedDict([])
 	month['01'] = january
 	month['02'] = february
 	month['03'] = march
