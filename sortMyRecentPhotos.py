@@ -40,9 +40,11 @@ def printLogFilesByExt(ilk, listFiles):
 def sortByMonth(fileList):
 
 	logFile.write('Make list of month for ' + str(fileList) + '...\n\n')
+
 	january, february, march, april = ([] for i in range(4))
 	may, june, july, august = ([] for i in range(4))
 	september, october, november, december = ([] for i in range(4))
+	#declare 12 lists fo each month
 
 	logFile.write('Make dict of lists of month...\n\n')
 	month = {}
@@ -58,12 +60,13 @@ def sortByMonth(fileList):
 	month['10'] = october
 	month['11'] = november
 	month['12'] = december
+	#put lists in dictionary
 
 	logFile.write('Compile regex for dates in files...\n\n')
 	dateRegex = re.compile(r''' 
 		^((?:201[0-9]))- 		#year - Group 1
 		((?:0|1)(?:\d))-		#month - Group 2
-		((?:[0-3])(?:\d))	#day - Group 3
+		((?:[0-3])(?:\d))		#day - Group 3
 		.*$ 					#all other symbols after
 		
 		''', 
@@ -100,7 +103,7 @@ def sortByExtEngine():
 	print('\nTotal size of ' + str(len(files)) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
-	###sort out files by extentions###
+	######sort out files by extentions######
 	
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
 	#the way to declare multiple lists
