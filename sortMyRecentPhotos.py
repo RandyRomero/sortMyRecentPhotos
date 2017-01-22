@@ -71,11 +71,13 @@ def sortByMonth(fileList):
 		
 		''', 
 		re.VERBOSE)
+	#regex to sort out files by month
 
 	for item in fileList:
 		mo = dateRegex.search(item)
 		if mo != None:
 			month[mo.group(2)].append(mo.group())
+	#put files in lists according to their month		
 
 	for k, v in month.items():
 		print('Content of ' + k + ' is: ')
