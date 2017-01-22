@@ -39,7 +39,7 @@ def printLogFilesByExt(ilk, listFiles):
 
 def sortByMonth(fileList):
 
-	logFile.write('Make list of month for ' + str(fileList) + '...\n\n')
+	logFile.write('Make list of month...\n\n')
 
 	january, february, march, april = ([] for i in range(4))
 	may, june, july, august = ([] for i in range(4))
@@ -80,9 +80,11 @@ def sortByMonth(fileList):
 	#put files in lists according to their month		
 
 	for k, v in month.items():
-		print('Content of ' + k + ' is: ')
-		print(v)
-		print('\n\n')			
+		if len(v) > 0:
+			logFile.write('Content of ' + k + ' is: \n')
+			for item in v:
+				logFile.write(item + '\n')
+			logFile.write('\n\n')			
 
 ############################### sortByExtEngine  ##############################			
 
