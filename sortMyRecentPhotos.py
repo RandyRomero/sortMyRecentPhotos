@@ -143,8 +143,6 @@ def sortByExtEngine():
 
 	return extLists
 
-	
-	
 
 ########################  Begining of the program  #######################
 
