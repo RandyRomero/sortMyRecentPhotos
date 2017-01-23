@@ -144,7 +144,7 @@ def sortByExtEngine():
 	return extLists
 
 	
-	#split files by month (skip PNG)	
+	
 
 ########################  Begining of the program  #######################
 
@@ -154,6 +154,9 @@ def copyEngine(extLists):
 		if k == 'PNG':
 			continue
 		sortByMonth(v)
+	#split files in different lists by month (skip PNG)	
+	
+
 
 ########################  Begining of the program  #######################
 
