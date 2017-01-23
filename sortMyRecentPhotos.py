@@ -141,14 +141,19 @@ def sortByExtEngine():
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention	
 
+	return extLists
 
-
-	for v in extLists.values():
-		if v == pngList:
-			continue
-		sortByMonth(v)
+	
 	#split files by month (skip PNG)	
 
+########################  Begining of the program  #######################
+
+def copyEngine(extLists):
+
+	for k,v in extLists.items():
+		if k == 'PNG':
+			continue
+		sortByMonth(v)
 
 ########################  Begining of the program  #######################
 
@@ -159,7 +164,7 @@ while True:
 	start = input('\nStart to look for your photos? (y/n) Your answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
-		sortByExtEngine()
+		extLists = sortByExtEngine()
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -170,27 +175,31 @@ while True:
 		print('Input error. You should type in y or n')	
 		continue
 
+######### start copy or not menu #############
+
+while True:
+	logFile.write('Start sort out and copy files to ' + 
+		sortedPhotos + '? (y/n). You answer is: \n')
+	
+	readyOrNot = input('\nStart sort out and copy files to ' + 
+		sortedPhotos + '? (y/n). You answer is: ')
+	
+	if readyOrNot == 'y':
+		logFile.write('Got "y". Call sortByExtEngine()\n\n')
+		copyEngine(extLists)
+		break
+	elif readyOrNot == "n":
+		logFile.write('Got "n". Exit script.\n\n')
+		print('Ok, next time. See ya')
+		sys.exit()
+	else:
+		logFile.write('Got wrong input. Ask again...\n\n')
+		print('Input error. You should type in y or n')	
+		continue
+
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
 
-######### start copy or not menu #############
-while True:
-	logFile.wirte('Start sort out and copy files to ' + 
-		sortedPhotos + '? (y/n). You answer is: \n')
-	
-	readyOrNot = input('Start sort out and copy files to ' + 
-		sortedPhotos + '? (y/n). You answer is: \n')
-		if readyOrNot == 'y':
-			logFile.write('Got "y". Call sortByExtEngine()\n\n')
-			#call functions to sopy files
-		elif readyOrNot == "n":
-			logFile.write('Got "n". Exit script.\n\n')
-			print('Ok, next time. See ya')
-			sys.exit()
-		else:
-			logFile.write('Got wrong input. Ask again...\n\n')
-			print('Input error. You should type in y or n')	
-			continue
 
 #TODO comparison of sorted and unsorted in order to figure out
 #if sorting went without missing any file
