@@ -37,7 +37,7 @@ def printLogFilesByExt(ilk, listFiles):
 
 ############################# sort by month ##############################
 
-def sortByMonth(fileList):
+def sortByMonth(extLists):
 
 	logFile.write('Make list of month...\n\n')
 
@@ -73,10 +73,15 @@ def sortByMonth(fileList):
 		re.VERBOSE)
 	#regex to sort out files by month
 
-	for item in fileList:
-		mo = dateRegex.search(item)
-		if mo != None:
-			month[mo.group(2)].append(mo.group())
+
+	for k,v in extLists.items():
+		if k == 'PNG':
+			continue
+		
+		for item in v:	
+			mo = dateRegex.search(item)
+			if mo != None:
+				month[mo.group(2)].append(mo.group())
 	#put files in lists according to their month		
 
 	for k, v in month.items():
@@ -148,10 +153,7 @@ def sortByExtEngine():
 
 def copyEngine(extLists):
 
-	for k,v in extLists.items():
-		if k == 'PNG':
-			continue
-		sortByMonth(v)
+	month = sortByMonth(extLists)
 	#split files in different lists by month (skip PNG)	
 	
 
