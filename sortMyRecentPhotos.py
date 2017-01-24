@@ -96,8 +96,8 @@ def sortByMonth(extLists):
 				logFile.write(item + '\n')
 			logFile.write('\n\n')
 
-	logFile.write('Here is list of unsorted files. They won\'t be copied anywhere\n')
-	print('Here is list of unsorted files. They won\'t be copied anywhere\n')
+	logFile.write('\nHere is list of unsorted files. They won\'t be copied anywhere:\n')
+	print('\nHere is list of unsorted files. They won\'t be copied anywhere:')
 	for file in mismatchFiles:
 		print(file)
 		logFile.write(file + '\n')
