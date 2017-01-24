@@ -73,6 +73,7 @@ def sortByMonth(extLists):
 		re.VERBOSE)
 	#regex to sort out files by month
 
+	mismatchFiles = []
 
 	for k,v in extLists.items():
 		if k == 'PNG':
@@ -82,6 +83,10 @@ def sortByMonth(extLists):
 			mo = dateRegex.search(item)
 			if mo != None:
 				month[mo.group(2)].append(mo.group())
+			else:
+				mismatchFiles.append(item)
+				#make list of file that didn't match regex
+					
 	#put files in lists according to their month		
 
 	for k, v in month.items():
@@ -90,6 +95,13 @@ def sortByMonth(extLists):
 			for item in v:
 				logFile.write(item + '\n')
 			logFile.write('\n\n')
+
+	logFile.write('Here is list of unsorted files. They won\'t be copied anywhere\n')
+	print('Here is list of unsorted files. They won\'t be copied anywhere\n')
+	for file in mismatchFiles:
+		print(file)
+		logFile.write(file + '\n')
+				
 
 ################################## copy PNG  #################################
 
@@ -154,7 +166,9 @@ def sortByExtEngine():
 def copyEngine(extLists):
 
 	month = sortByMonth(extLists)
-	#split files in different lists by month (skip PNG)	
+	#split files in different lists by month (skip PNG)
+	# for k,v in month.items():
+
 	
 
 
