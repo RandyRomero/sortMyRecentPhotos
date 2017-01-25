@@ -47,7 +47,7 @@ def sortByMonth(extLists):
 	#declare 12 lists fo each month
 
 	year16, year17 = ([] for i in range(2))
-	year = collections.OrderedDict([('2016', year16), '2017', year17])
+	year = collections.OrderedDict([('2016', year16), ('2017', year17)])
 	#lists and dictionary for sorting by years
 
 	logFile.write('Make dict of lists of month...\n\n')
@@ -94,14 +94,14 @@ def sortByMonth(extLists):
 				#make list of file that didn't match regex
 
 	
-	for k,v in year:			
+	for k,v in year.items():			
 		if len(v) > 0:
 			logFile.write(k + ' year: \n')
-			for k, v in month.items():
+			for key, value in month.items():
 				if len(v) > 0:
-				logFile.write('Content of ' + k + ' is: \n')
-				for item in v:
-					logFile.write(item + '\n')
+					logFile.write('Content of ' + key + ' is: \n')
+					for item in value:
+						logFile.write(item + '\n')
 			logFile.write('\n\n')
 	logFile.write('\n\n')
 	
@@ -112,6 +112,8 @@ def sortByMonth(extLists):
 	for file in mismatchFiles:
 		print(file)
 		logFile.write(file + '\n')
+
+	return year
 				
 
 ################################## copy PNG  #################################
@@ -176,10 +178,8 @@ def sortByExtEngine():
 
 def copyEngine(extLists):
 
-	month = sortByMonth(extLists)
-	#split files in different lists by month (skip PNG)
-	# for k,v in month.items():
-
+	year = sortByMonth(extLists)
+	
 	
 
 
