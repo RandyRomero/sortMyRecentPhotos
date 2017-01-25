@@ -46,6 +46,10 @@ def sortByMonth(extLists):
 	september, october, november, december = ([] for i in range(4))
 	#declare 12 lists fo each month
 
+	year16, year17 = ([] for i in range(2))
+	year = collections.OrderedDict([('2016', year16), '2017', year17])
+	#lists and dictionary for sorting by years
+
 	logFile.write('Make dict of lists of month...\n\n')
 	month = collections.OrderedDict([])
 	month['01'] = january
@@ -82,8 +86,9 @@ def sortByMonth(extLists):
 		for item in v:	
 			mo = dateRegex.search(item)
 			if mo != None:
-				month[mo.group(2)].append(mo.group())
-				#put files in lists according to their month
+				year[mo.group(1)].append(month[mo.group(2)].append(mo.group()))
+				#put files in lists according their year 
+				#and than in another list according to their month
 			else:
 				mismatchFiles.append(item)
 				#make list of file that didn't match regex
@@ -95,7 +100,8 @@ def sortByMonth(extLists):
 				logFile.write(item + '\n')
 			logFile.write('\n\n')
 
-	logFile.write('\nHere is list of unsorted files. They won\'t be copied anywhere:\n')
+	logFile.write('\nHere is list of unsorted files.' +
+	 'They won\'t be copied anywhere:\n')
 	print('\nHere is list of unsorted files. They won\'t be copied anywhere:')
 	for file in mismatchFiles:
 		print(file)
