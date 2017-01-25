@@ -83,11 +83,10 @@ def sortByMonth(extLists):
 			mo = dateRegex.search(item)
 			if mo != None:
 				month[mo.group(2)].append(mo.group())
+				#put files in lists according to their month
 			else:
 				mismatchFiles.append(item)
 				#make list of file that didn't match regex
-					
-	#put files in lists according to their month		
 
 	for k, v in month.items():
 		if len(v) > 0:
@@ -195,7 +194,7 @@ while True:
 ######### start copy or not menu #############
 
 while True:
-	logFile.write('Start sort out and copy files to ' + 
+	logFile.write('\nStart sort out and copy files to ' + 
 		sortedPhotos + '? (y/n). You answer is: \n')
 	
 	readyOrNot = input('\nStart sort out and copy files to ' + 
