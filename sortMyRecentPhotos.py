@@ -86,20 +86,38 @@ def sortByDate(extLists):
 		for item in v:	
 			mo = dateRegex.search(item)
 			if mo != None:
-				year[mo.group(1)].append(month[mo.group(2)].append(mo.group()))
+				month[mo.group(2)].append(mo.group())
 				#put files in lists according their year 
 				#and than in another list according to their month
 			else:
 				mismatchFiles.append(item)
 				#make list of file that didn't match regex
+				
 
 	
+	logOutDate = collections.OrderedDict([('01', 'January'),
+											('02', 'February'),
+											('03', 'March'),			
+											('04', 'April'),			
+											('05', 'May'),			
+											('06', 'June'),			
+											('07', 'July'),		
+											('08', 'August'),			
+											('09', 'September'),			
+											('10', 'October'),			
+											('11', 'November'),			
+											('12', 'December')])			
+
+
 	for k,v in year.items():			
 		if len(v) > 0:
-			logFile.write(k + ' year: \n')
-			for key, value in month.items():
+			#logFile.write(k + ' year: \n')
+			#for key, value in month.items():
+			#print(year[k])
+			for key, value in v:
 				if len(value) > 0:
-					logFile.write('Content of ' + key + ' is: \n')
+					logFile.write('Photos of ' + logOutDate[key] + ' ' + 
+						k + ' are: \n')
 					for item in value:
 						logFile.write(item + '\n')
 				logFile.write('\n')
