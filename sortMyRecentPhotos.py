@@ -37,18 +37,18 @@ def printLogFilesByExt(ilk, listFiles):
 
 ############################# sort by month ##############################
 
-def sortByMonth(extLists):
+def sortByDate(extLists):
 
-	logFile.write('Make list of month...\n\n')
+	logFile.write('Make list of month...\n')
+	year16, year17 = ([] for i in range(2))
+	year = collections.OrderedDict([('2016', year16), ('2017', year17)])
+	#lists and dictionary for sorting by years
 
+	logFile.write('Make list of month...\n')
 	january, february, march, april = ([] for i in range(4))
 	may, june, july, august = ([] for i in range(4))
 	september, october, november, december = ([] for i in range(4))
 	#declare 12 lists fo each month
-
-	year16, year17 = ([] for i in range(2))
-	year = collections.OrderedDict([('2016', year16), ('2017', year17)])
-	#lists and dictionary for sorting by years
 
 	logFile.write('Make dict of lists of month...\n\n')
 	month = collections.OrderedDict([])
@@ -98,12 +98,12 @@ def sortByMonth(extLists):
 		if len(v) > 0:
 			logFile.write(k + ' year: \n')
 			for key, value in month.items():
-				if len(v) > 0:
+				if len(value) > 0:
 					logFile.write('Content of ' + key + ' is: \n')
 					for item in value:
 						logFile.write(item + '\n')
-			logFile.write('\n\n')
-	logFile.write('\n\n')
+				logFile.write('\n')
+	#log to file how files was sorted by date
 	
 
 	logFile.write('\nHere is list of unsorted files.' +
@@ -112,6 +112,7 @@ def sortByMonth(extLists):
 	for file in mismatchFiles:
 		print(file)
 		logFile.write(file + '\n')
+	#message about mismatch files
 
 	return year
 				
@@ -174,14 +175,11 @@ def sortByExtEngine():
 	return extLists
 
 
-########################  Begining of the program  #######################
+#############################  copyEngine  ##############################
 
 def copyEngine(extLists):
-
-	year = sortByMonth(extLists)
+	sortedPhoto = sortByDate(extLists)
 	
-	
-
 
 ########################  Begining of the program  #######################
 
