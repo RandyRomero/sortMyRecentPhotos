@@ -93,12 +93,18 @@ def sortByMonth(extLists):
 				mismatchFiles.append(item)
 				#make list of file that didn't match regex
 
-	for k, v in month.items():
+	
+	for k,v in year:			
 		if len(v) > 0:
-			logFile.write('Content of ' + k + ' is: \n')
-			for item in v:
-				logFile.write(item + '\n')
+			logFile.write(k + ' year: \n')
+			for k, v in month.items():
+				if len(v) > 0:
+				logFile.write('Content of ' + k + ' is: \n')
+				for item in v:
+					logFile.write(item + '\n')
 			logFile.write('\n\n')
+	logFile.write('\n\n')
+	
 
 	logFile.write('\nHere is list of unsorted files.' +
 	 'They won\'t be copied anywhere:\n')
