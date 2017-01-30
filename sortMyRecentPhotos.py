@@ -65,6 +65,7 @@ def sortByDate(extLists):
 				if yearNum not in yearList:
 					yearList.append(yearNum)
 
+		
 	yearDict = collections.OrderedDict([])
 
 	january, february, march, april = ([] for i in range(4))
@@ -90,7 +91,7 @@ def sortByDate(extLists):
 
 	for year in yearList: 
 		yearDict[year] = twelveMonth
-	#add year with tvelwe month in dictionary
+	#add year with twelve month in dictionary
 
 	for k, v in extLists.items(): 
 		
@@ -101,12 +102,24 @@ def sortByDate(extLists):
 			mo = dateRegex.search(item)
 			if mo != None:
 				#yearDict[mo.group(1)][mo.group(2)].append(mo.group())
-				yearDict[mo.group(1)][mo.group(2)].append(item)
-				logFile.write('\nFile ' + item + ' was added to ' + 
-					'yearDict[' + mo.group(1) + '][' + mo.group(2) + ']')
+				if mo.group(1) == '2016':
+					#logFile.write(item + ' went to 2016\n')
+					#yearDict['2016'][mo.group(2)].append(item)
+				if mo.group(1) == '2017':
+					#logFile.write(item + ' went to 2017\n')
+					yearDict['2017'][mo.group(2)].append(item)	
+				logFile.write(str(yearDict['2016']))
+
+				# if item in yearDict[mo.group(1)][mo.group(2)]:
+				# 	logFile.write(str(True))
+				# else:
+				# 	logFile.write(str(False))		
+				#logFile.write('\nFile ' + item + ' was added to ' + 
+					#'yearDict[' + mo.group(1) + '][' + mo.group(2) + ']')
 			else:
 				mismatchFiles.append(item)
 
+	print(yearDict['2016']['01'])
 
 	logFile.write('\n\nHere is list of unsorted files.' +
 		 'They won\'t be copied anywhere:\n')
@@ -116,18 +129,22 @@ def sortByDate(extLists):
 		logFile.write(file + '\n')
 		#message about mismatch files
 
-	for yearInDictNum, monthDict in yearDict.items():
-		for monthInDictNum, month in monthDict.items():
-			if len(month) != 0:
-				print('List of photo that was taken in ' + monthInDictNum + 
-					' of ' + yearInDictNum + ': \n')
-				logFile.write('List of photo that was taken in ' + monthInDictNum + 
-					' of ' + yearInDictNum + ': \n')
-			for file in month:
-				print(file)
-				logFile.write(file + '\n')
-			print()		
+	# for yearInDictNum, monthDict in yearDict.items():
+	# 	for monthInDictNum, month in monthDict.items():
+	# 		if len(month) != 0:
+	# 			print('Now printing out ')
+	# 			print('List of photo that was taken in ' + monthInDictNum + 
+	# 				' of ' + yearInDictNum + ': \n')
+	# 			logFile.write('List of photo that was taken in ' + 
+	# 				monthInDictNum + ' of ' + yearInDictNum + ': \n')
+	# 		for file in month:
+	# 			print(file)
+	# 			logFile.write(file + '\n')
+	# 		print()		
 			#print list of photo by month and year
+	# for k,v in yearDict.items():
+	# 	logFile.write(k + '\n\n')
+	# 	logFile.write(str(v))		
 
 ################################## copy PNG  #################################
 
