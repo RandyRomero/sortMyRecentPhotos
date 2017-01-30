@@ -39,32 +39,9 @@ def printLogFilesByExt(ilk, listFiles):
 
 def sortByDate(extLists):
 
-	logFile.write('Make list of month...\n')
-	year16, year17 = ([] for i in range(2))
-	year = collections.OrderedDict([('2016', year16), ('2017', year17)])
-	#lists and dictionary for sorting by years
+	############first we need to know home many years we have ################
 
-	logFile.write('Make list of month...\n')
-	january, february, march, april = ([] for i in range(4))
-	may, june, july, august = ([] for i in range(4))
-	september, october, november, december = ([] for i in range(4))
-	#declare 12 lists fo each month
-
-	logFile.write('Make dict of lists of month...\n\n')
-	month = collections.OrderedDict([])
-	month['01'] = january
-	month['02'] = february
-	month['03'] = march
-	month['04'] = april
-	month['05'] = may
-	month['06'] = june
-	month['07'] = july
-	month['08'] = august
-	month['09'] = september
-	month['10'] = october
-	month['11'] = november
-	month['12'] = december
-	#put lists in dictionary
+	yearList = [] #
 
 	logFile.write('Compile regex for dates in files...\n\n')
 	dateRegex = re.compile(r''' 
@@ -75,65 +52,79 @@ def sortByDate(extLists):
 		
 		''', 
 		re.VERBOSE)
-	#regex to sort out files by month
+
+	for k, v in extLists.items(): 
+
+		if k == 'PNG': #k is name of extention
+				continue
+			
+		for item in v: #v is list of files
+			mo = dateRegex.search(item)
+			if mo != None:
+				yearNum = mo.group(1)
+				if yearNum not in yearList:
+					yearList.append(yearNum)
+
+	yearDict = collections.OrderedDict([])
+
+	january, february, march, april = ([] for i in range(4))
+	may, june, july, august = ([] for i in range(4))
+	september, october, november, december = ([] for i in range(4))
+	#declare 12 lists fo each month
+
+	twelveMonth = collections.OrderedDict([])
+	twelveMonth['01'] = january
+	twelveMonth['02'] = february
+	twelveMonth['03'] = march
+	twelveMonth['04'] = april
+	twelveMonth['05'] = may
+	twelveMonth['06'] = june
+	twelveMonth['07'] = july
+	twelveMonth['08'] = august
+	twelveMonth['09'] = september
+	twelveMonth['10'] = october
+	twelveMonth['11'] = november
+	twelveMonth['12'] = december
 
 	mismatchFiles = []
 
-	for k,v in extLists.items():
-		if k == 'PNG':
-			continue
+	for year in yearList: 
+		yearDict[year] = twelveMonth
+	#add year with tvelwe month in dictionary
+
+	for k, v in extLists.items(): 
 		
-		for item in v:	
+		if k == 'PNG': #k is name of extention
+				continue
+
+		for item in v: #v is list of files
 			mo = dateRegex.search(item)
 			if mo != None:
-				month[mo.group(2)].append(mo.group())
-				#put files in lists according their year 
-				#and than in another list according to their month
+				#yearDict[mo.group(1)][mo.group(2)].append(mo.group())
+				yearDict[mo.group(1)][mo.group(2)].append(item)
+				print('File ' + item + 'was added to ' + 
+					yearDict[mo.group(1)][mo.group(2)])
 			else:
 				mismatchFiles.append(item)
-				#make list of file that didn't match regex
-				
 
-	
-	logOutDate = collections.OrderedDict([('01', 'January'),
-											('02', 'February'),
-											('03', 'March'),			
-											('04', 'April'),			
-											('05', 'May'),			
-											('06', 'June'),			
-											('07', 'July'),		
-											('08', 'August'),			
-											('09', 'September'),			
-											('10', 'October'),			
-											('11', 'November'),			
-											('12', 'December')])			
-
-
-	for k,v in year.items():			
-		if len(v) > 0:
-			#logFile.write(k + ' year: \n')
-			#for key, value in month.items():
-			#print(year[k])
-			for key, value in v:
-				if len(value) > 0:
-					logFile.write('Photos of ' + logOutDate[key] + ' ' + 
-						k + ' are: \n')
-					for item in value:
-						logFile.write(item + '\n')
-				logFile.write('\n')
-	#log to file how files was sorted by date
-	
 
 	logFile.write('\nHere is list of unsorted files.' +
-	 'They won\'t be copied anywhere:\n')
+		 'They won\'t be copied anywhere:\n')
 	print('\nHere is list of unsorted files. They won\'t be copied anywhere:')
 	for file in mismatchFiles:
 		print(file)
 		logFile.write(file + '\n')
-	#message about mismatch files
+		#message about mismatch files
 
-	return year
-				
+	# for yearInDictNum, monthDict in yearDict.items():
+	# 	for monthInDictNum, month in monthDict.items():
+	# 		if len(month) != 0:
+	# 			print('List of photo that was taken in ' + monthInDictNum + 
+	# 				' of ' + yearInDictNum + ': \n')
+	# 		for file in month:
+	# 			print(file)
+	# 		print()		
+			#print list of photo by month and year
 
 ################################## copy PNG  #################################
 
