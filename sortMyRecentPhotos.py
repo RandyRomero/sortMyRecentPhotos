@@ -102,13 +102,13 @@ def sortByDate(extLists):
 			if mo != None:
 				#yearDict[mo.group(1)][mo.group(2)].append(mo.group())
 				yearDict[mo.group(1)][mo.group(2)].append(item)
-				print('File ' + item + 'was added to ' + 
-					yearDict[mo.group(1)][mo.group(2)])
+				logFile.write('\nFile ' + item + ' was added to ' + 
+					'yearDict[' + mo.group(1) + '][' + mo.group(2) + ']')
 			else:
 				mismatchFiles.append(item)
 
 
-	logFile.write('\nHere is list of unsorted files.' +
+	logFile.write('\n\nHere is list of unsorted files.' +
 		 'They won\'t be copied anywhere:\n')
 	print('\nHere is list of unsorted files. They won\'t be copied anywhere:')
 	for file in mismatchFiles:
