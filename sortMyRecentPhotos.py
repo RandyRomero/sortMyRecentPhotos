@@ -116,14 +116,17 @@ def sortByDate(extLists):
 		logFile.write(file + '\n')
 		#message about mismatch files
 
-	# for yearInDictNum, monthDict in yearDict.items():
-	# 	for monthInDictNum, month in monthDict.items():
-	# 		if len(month) != 0:
-	# 			print('List of photo that was taken in ' + monthInDictNum + 
-	# 				' of ' + yearInDictNum + ': \n')
-	# 		for file in month:
-	# 			print(file)
-	# 		print()		
+	for yearInDictNum, monthDict in yearDict.items():
+		for monthInDictNum, month in monthDict.items():
+			if len(month) != 0:
+				print('List of photo that was taken in ' + monthInDictNum + 
+					' of ' + yearInDictNum + ': \n')
+				logFile.write('List of photo that was taken in ' + monthInDictNum + 
+					' of ' + yearInDictNum + ': \n')
+			for file in month:
+				print(file)
+				logFile.write(file + '\n')
+			print()		
 			#print list of photo by month and year
 
 ################################## copy PNG  #################################
