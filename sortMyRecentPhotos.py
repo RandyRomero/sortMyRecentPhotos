@@ -1,6 +1,6 @@
 #!python3 
 
-import os, shutil, sys, collections, re
+import copy, os, shutil, sys, collections, re
 
 logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
 logFile.write('Program started. Log file created\n\n')
@@ -90,7 +90,7 @@ def sortByDate(extLists):
 	mismatchFiles = []
 
 	for year in yearList: 
-		yearDict[year] = twelveMonth
+		yearDict['{}'.format(year)] = copy.deepcopy(twelveMonth)
 	#add year with twelve month in dictionary
 
 	for k, v in extLists.items(): 
@@ -101,14 +101,8 @@ def sortByDate(extLists):
 		for item in v: #v is list of files
 			mo = dateRegex.search(item)
 			if mo != None:
-				#yearDict[mo.group(1)][mo.group(2)].append(mo.group())
-				if mo.group(1) == '2016':
-					#logFile.write(item + ' went to 2016\n')
-					#yearDict['2016'][mo.group(2)].append(item)
-				if mo.group(1) == '2017':
-					#logFile.write(item + ' went to 2017\n')
-					yearDict['2017'][mo.group(2)].append(item)	
-				logFile.write(str(yearDict['2016']))
+				yearDict[mo.group(1)][mo.group(2)].append(item)
+				logFile.write(str(mo.group(1)))
 
 				# if item in yearDict[mo.group(1)][mo.group(2)]:
 				# 	logFile.write(str(True))
