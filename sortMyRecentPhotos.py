@@ -118,14 +118,27 @@ def sortByDate(extLists):
 		logFile.write(file + '\n')
 		#message about mismatch files
 
+	monthToPrint = {'01': 'January',
+					'02': 'February',
+					'03': 'March',
+					'04': 'April',
+					'05': 'May',
+					'06': 'June',
+					'07': 'July',
+					'08': 'August',
+					'09': 'September',
+					'10': 'October',
+					'11': 'November',
+					'12': 'December'}	
+
 	for yearDictKey, yearDictValue in yearDict.items():
 		for monthDictKey, monthDictValue in yearDictValue.items():
 			if len(monthDictValue) != 0:
 				print('\n\n' + str(len(monthDictValue)) + 
-					' file was created in ' + monthDictKey + 
+					' file was created in ' + monthToPrint[monthDictKey] + 
 					' of ' + yearDictKey + ':')
 				logFile.write('\n\n' + str(len(monthDictValue)) + 
-				' that was taken in ' + monthDictKey + ' of ' 
+				' that was taken in ' + monthToPrint[monthDictKey] + ' of ' 
 				+ yearDictKey + ': \n')
 			for file in monthDictValue:
 				print(file)
