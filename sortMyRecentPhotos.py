@@ -121,14 +121,16 @@ def sortByDate(extLists):
 	for yearDictKey, yearDictValue in yearDict.items():
 		for monthDictKey, monthDictValue in yearDictValue.items():
 			if len(monthDictValue) != 0:
-				print(str(len(monthDictValue)) + ' file was created in ' + 
-					monthDictKey + ' of ' + yearDictKey + ': \n')
-				logFile.write('\nList of photo that was taken in ' + 
-					monthDictKey + ' of ' + yearDictKey + ': \n')
+				print('\n\n' + str(len(monthDictValue)) + 
+					' file was created in ' + monthDictKey + 
+					' of ' + yearDictKey + ':')
+				logFile.write('\n\n' + str(len(monthDictValue)) + 
+				' that was taken in ' + monthDictKey + ' of ' 
+				+ yearDictKey + ': \n')
 			for file in monthDictValue:
 				print(file)
 				logFile.write(file + '\n')
-			print()		
+			#print()		
 			#print list of photo by month and year
 
 ################################## copy PNG  #################################
