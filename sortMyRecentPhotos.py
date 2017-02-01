@@ -35,13 +35,15 @@ def printLogFilesByExt(ilk, listFiles):
 		for file in listFiles:
 			logFile.write(file + '\n')
 
-############################# sort by month ##############################
+############################# Sort by Date ##############################
 
 def sortByDate(extLists):
 
-	############first we need to know home many years we have ################
+	#First we need to know home many years we have. That's why we 
+	#send files through regex - to get all possible years and store them
+	#to list
 
-	yearList = [] #
+	yearList = []
 
 	logFile.write('Compile regex for dates in files...\n\n')
 	dateRegex = re.compile(r''' 
@@ -54,24 +56,23 @@ def sortByDate(extLists):
 		re.VERBOSE)
 
 	for k, v in extLists.items(): 
-
 		if k == 'PNG': #k is name of extention
 				continue
-			
 		for item in v: #v is list of files
 			mo = dateRegex.search(item)
 			if mo != None:
-				yearNum = mo.group(1)
+				yearNum = mo.group(1) #return year from file name
 				if yearNum not in yearList:
-					yearList.append(yearNum)
+					yearList.append(yearNum) 
 
-		
+	#now we need a dictionary in order to get specific group of month
+	#by passing a year
 	yearDict = collections.OrderedDict([])
 
 	january, february, march, april = ([] for i in range(4))
 	may, june, july, august = ([] for i in range(4))
 	september, october, november, december = ([] for i in range(4))
-	#declare 12 lists fo each month
+	#declare 12 empty lists fo each month
 
 	twelveMonth = collections.OrderedDict([])
 	twelveMonth['01'] = january
@@ -87,33 +88,27 @@ def sortByDate(extLists):
 	twelveMonth['11'] = november
 	twelveMonth['12'] = december
 
-	mismatchFiles = []
+	mismatchFiles = [] #for files that not match regex
 
 	for year in yearList: 
 		yearDict['{}'.format(year)] = copy.deepcopy(twelveMonth)
-	#add year with twelve month in dictionary
+	#create dictionary key for every necessary year and tie its with
+	#value that's a new DEEPCOPY of twelveMonth. Without deepcopy we get
+	#same lists of files in every year 
 
 	for k, v in extLists.items(): 
-		
 		if k == 'PNG': #k is name of extention
 				continue
-
 		for item in v: #v is list of files
 			mo = dateRegex.search(item)
 			if mo != None:
 				yearDict[mo.group(1)][mo.group(2)].append(item)
-				logFile.write(str(mo.group(1)))
-
-				# if item in yearDict[mo.group(1)][mo.group(2)]:
-				# 	logFile.write(str(True))
-				# else:
-				# 	logFile.write(str(False))		
-				#logFile.write('\nFile ' + item + ' was added to ' + 
-					#'yearDict[' + mo.group(1) + '][' + mo.group(2) + ']')
+				#add file to corresponding location, 
+				#e.g.: year 2016 month january
+				logFile.write('\nFile ' + item + ' was added to ' + 
+					'yearDict[' + mo.group(1) + '][' + mo.group(2) + ']')
 			else:
 				mismatchFiles.append(item)
-
-	print(yearDict['2016']['01'])
 
 	logFile.write('\n\nHere is list of unsorted files.' +
 		 'They won\'t be copied anywhere:\n')
@@ -123,22 +118,18 @@ def sortByDate(extLists):
 		logFile.write(file + '\n')
 		#message about mismatch files
 
-	# for yearInDictNum, monthDict in yearDict.items():
-	# 	for monthInDictNum, month in monthDict.items():
-	# 		if len(month) != 0:
-	# 			print('Now printing out ')
-	# 			print('List of photo that was taken in ' + monthInDictNum + 
-	# 				' of ' + yearInDictNum + ': \n')
-	# 			logFile.write('List of photo that was taken in ' + 
-	# 				monthInDictNum + ' of ' + yearInDictNum + ': \n')
-	# 		for file in month:
-	# 			print(file)
-	# 			logFile.write(file + '\n')
-	# 		print()		
+	for yearDictKey, yearDictValue in yearDict.items():
+		for monthDictKey, monthDictValue in yearDictValue.items():
+			if len(monthDictValue) != 0:
+				print('List of photo that was taken in ' + monthDictKey + 
+					' of ' + yearDictKey + ': \n')
+				logFile.write('\nList of photo that was taken in ' + 
+					monthDictKey + ' of ' + yearDictKey + ': \n')
+			for file in monthDictValue:
+				print(file)
+				logFile.write(file + '\n')
+			print()		
 			#print list of photo by month and year
-	# for k,v in yearDict.items():
-	# 	logFile.write(k + '\n\n')
-	# 	logFile.write(str(v))		
 
 ################################## copy PNG  #################################
 
