@@ -121,8 +121,8 @@ def sortByDate(extLists):
 	for yearDictKey, yearDictValue in yearDict.items():
 		for monthDictKey, monthDictValue in yearDictValue.items():
 			if len(monthDictValue) != 0:
-				print('List of photo that was taken in ' + monthDictKey + 
-					' of ' + yearDictKey + ': \n')
+				print(str(len(monthDictValue)) + ' file was created in ' + 
+					monthDictKey + ' of ' + yearDictKey + ': \n')
 				logFile.write('\nList of photo that was taken in ' + 
 					monthDictKey + ' of ' + yearDictKey + ': \n')
 			for file in monthDictValue:
@@ -241,7 +241,7 @@ logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
 
 
-#TODO comparison of sorted and unsorted in order to figure out
+#TODO compare of sorted and unsorted in order to figure out
 #if sorting went without missing any file
 
 #TODO delete unsortedFiles by users submit after checking that unsorted 
