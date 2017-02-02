@@ -2,6 +2,8 @@
 
 import copy, os, shutil, sys, collections, re
 
+########################check if folder for work exist#################
+
 if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
 	#mind the syntax: it is 'D:/', neither 'd', nor 'D:', nor "D:/"
 	logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
