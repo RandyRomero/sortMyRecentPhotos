@@ -154,7 +154,7 @@ def sortByDate(extLists):
 					' file was created in ' + monthToPrint[monthDictKey] + 
 					' of ' + yearDictKey + ':')
 				logFile.write('\n\n' + str(len(monthDictValue)) + 
-				' that was taken in ' + monthToPrint[monthDictKey] + ' of ' 
+				' file was created in ' + monthToPrint[monthDictKey] + ' of ' 
 				+ yearDictKey + ': \n')
 			for file in monthDictValue:
 				print(file)
