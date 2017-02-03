@@ -226,13 +226,13 @@ def copyEngine(extLists):
 	sortedPhoto = sortByDate(extLists)
 	
 
-########################  Begining of the program  #######################
+#############################  First menu ############################
 
 
-logFile.write('Start to look for your photos? (y/n)\n\n')
+logFile.write('Start to analize for your files? (y/n)\n\n')
 
 while True:
-	start = input('\nStart to look for your photos? (y/n) Your answer is: ')
+	start = input('\nStart to analize your files? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		extLists = sortByExtEngine()
@@ -249,11 +249,10 @@ while True:
 ######### start copy or not menu #############
 
 while True:
-	logFile.write('\nStart sort out and copy files to ' + 
-		sortedPhotos + '? (y/n). You answer is: \n')
+	logFile.write('\nStart to sort out your files? (y/n).\nYou answer is: \n')
 	
-	readyOrNot = input('\nStart sort out and copy files to ' + 
-		sortedPhotos + '? (y/n). You answer is: ')
+	readyOrNot = input('\nStart to sort out your files? (y/n).\n ' +
+		'You answer is: ')
 	
 	if readyOrNot == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
