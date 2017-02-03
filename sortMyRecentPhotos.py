@@ -126,14 +126,6 @@ def sortByDate(extLists):
 			else:
 				mismatchFiles.append(item)
 
-	logFile.write('\n\nHere is list of unsorted files.' +
-		 'They won\'t be copied anywhere:\n')
-	print('\nHere is list of unsorted files. They won\'t be copied anywhere:')
-	for file in mismatchFiles:
-		print(file)
-		logFile.write(file + '\n')
-		#message about mismatch files
-
 	monthToPrint = {'01': 'January',
 					'02': 'February',
 					'03': 'March',
@@ -159,7 +151,15 @@ def sortByDate(extLists):
 				+ yearDictKey + ': \n')
 			for file in monthDictValue:
 				logFile.write(file + '\n')
-			#print list of photo by month and year
+			#log list of photo by month and year
+
+	logFile.write('\n\nHere is list of unsorted files.' +
+		 'They won\'t be copied anywhere:\n')
+	print('\nHere is list of unsorted files. They won\'t be copied anywhere:')
+	for file in mismatchFiles:
+		print(file)
+		logFile.write(file + '\n')
+		#message about mismatch files		
 
 ################################## copy PNG  #################################
 
