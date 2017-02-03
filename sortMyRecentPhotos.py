@@ -139,7 +139,7 @@ def sortByDate(extLists):
 					'11': 'November',
 					'12': 'December'}	
 
-	print('\n')
+	print('\nSorted out by date:')
 	for yearDictKey, yearDictValue in yearDict.items():
 		for monthDictKey, monthDictValue in yearDictValue.items():
 			if len(monthDictValue) != 0:
