@@ -104,7 +104,7 @@ def sortByDate(extLists):
 	twelveMonth['11'] = november
 	twelveMonth['12'] = december
 
-	mismatchFiles = [] #for files that not match regex
+	mismatchedFiles = [] #for files that not match regex
 
 	for year in yearList: 
 		yearDict['{}'.format(year)] = copy.deepcopy(twelveMonth)
@@ -124,7 +124,7 @@ def sortByDate(extLists):
 				logFile.write('\nFile ' + item + ' was added to ' + 
 					'yearDict[' + mo.group(1) + '][' + mo.group(2) + ']')
 			else:
-				mismatchFiles.append(item)
+				mismatchedFiles.append(item)
 
 	monthToPrint = {'01': 'January',
 					'02': 'February',
@@ -153,13 +153,17 @@ def sortByDate(extLists):
 				logFile.write(file + '\n')
 			#log list of photo by month and year
 
-	logFile.write('\n\nHere is list of unsorted files.' +
-		 'They won\'t be copied anywhere:\n')
-	print('\nHere is list of unsorted files. They won\'t be copied anywhere:')
-	for file in mismatchFiles:
-		print(file)
-		logFile.write(file + '\n')
-		#message about mismatch files		
+	if len(mismatchedFiles) < 0:
+		logFile.write('\n\nHere are ' + len(mismatchedFiles) +
+			 'They won\'t be copied anywhere:\n')
+		print('\nHere are ' + len(mismatchedFiles) + 
+			'list of unsorted files. They won\'t be copied anywhere:')
+		for file in mismatchedFiles:
+			print(file)
+			logFile.write(file + '\n')
+			#message about mismatch files
+	
+	return len(mismatchedFiles)	
 
 ################################## copy PNG  #################################
 
@@ -237,8 +241,7 @@ while True:
 	if start == 'y':
 		logFile.write('Gots"y". Call sortByExtEngine()\n\n')
 		sbeeResult = sortByExtEngine()
-		print('extLists: ' + str(sbeeResult[1]))
-		sortByDate(sbeeResult[0])
+		mismatchedFiles = sortByDate(sbeeResult[0])
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -250,10 +253,11 @@ while True:
 		continue
 
 
-# logFile.write('Start to analize for your files? (y/n)\n\n')
+logFile.write(str(sbeeResult[1] - mismatchedFiles) + 
+	' files ready to copy. Start? (y/n)\n\n')
 
 # while True:
-# 	start = input('\nStart to copy ' + ' (y/n)\nYour answer is: ')
+# 	start = input('N files ready to copy. Start? (y/n)\nnYour answer is: ')
 # 	if start == 'y':
 # 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 # 		extLists = sortByExtEngine()
