@@ -235,31 +235,11 @@ while True:
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		extLists = sortByExtEngine()
+		copyEngine(extLists)
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
 		print('Goodbye')
-		sys.exit()
-	else:
-		logFile.write('Got wrong input. Ask again...\n\n')
-		print('Input error. You should type in y or n')	
-		continue
-
-######### start copy or not menu #############
-
-while True:
-	logFile.write('\nStart to sort out your files? (y/n).\nYou answer is: \n')
-	
-	readyOrNot = input('\nStart to sort out your files? (y/n).\n ' +
-		'You answer is: ')
-	
-	if readyOrNot == 'y':
-		logFile.write('Got "y". Call sortByExtEngine()\n\n')
-		copyEngine(extLists)
-		break
-	elif readyOrNot == "n":
-		logFile.write('Got "n". Exit script.\n\n')
-		print('Ok, next time. See ya')
 		sys.exit()
 	else:
 		logFile.write('Got wrong input. Ask again...\n\n')
