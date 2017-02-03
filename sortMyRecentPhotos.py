@@ -153,11 +153,11 @@ def sortByDate(extLists):
 				logFile.write(file + '\n')
 			#log list of photo by month and year
 
-	if len(mismatchedFiles) < 0:
-		logFile.write('\n\nHere are ' + len(mismatchedFiles) +
-			 'They won\'t be copied anywhere:\n')
-		print('\nHere are ' + len(mismatchedFiles) + 
-			'list of unsorted files. They won\'t be copied anywhere:')
+	if len(mismatchedFiles) > 0:
+		logFile.write('\n\nHere are ' + str(len(mismatchedFiles)) + 
+			' usorted files. They won\'t be copied anywhere:\n')
+		print('\nHere are ' + str(len(mismatchedFiles)) + 
+			' unsorted files. They won\'t be copied anywhere:')
 		for file in mismatchedFiles:
 			print(file)
 			logFile.write(file + '\n')
@@ -227,8 +227,8 @@ def sortByExtEngine():
 
 #############################  copyEngine  ##############################
 
-# def copyEngine(extLists):
-	# sortedPhoto = sortByDate(extLists)
+def copyEngine(extLists):
+	print('Copy engine doesn\'t exist yet :)')
 	
 
 #############################  First menu ############################
@@ -253,24 +253,24 @@ while True:
 		continue
 
 
-logFile.write(str(sbeeResult[1] - mismatchedFiles) + 
-	' files ready to copy. Start? (y/n)\n\n')
+logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
+	' files are ready to copy. Start? (y/n)\n\n')
 
-# while True:
-# 	start = input('N files ready to copy. Start? (y/n)\nnYour answer is: ')
-# 	if start == 'y':
-# 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
-# 		extLists = sortByExtEngine()
-# 		copyEngine(extLists)
-# 		break
-# 	elif start == 'n':
-# 		logFile.write('Got "n". Exit script.\n\n')
-# 		print('Goodbye')
-# 		sys.exit()
-# 	else:
-# 		logFile.write('Got wrong input. Ask again...\n\n')
-# 		print('Input error. You should type in y or n')	
-# 		continue
+while True:
+	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
+		' files are ready to copy. Start? (y/n)\nnYour answer is: ')
+	if start == 'y':
+		logFile.write('Got "y". Call copyEngine()\n\n')
+		copyEngine(sbeeResult[0])
+		break
+	elif start == 'n':
+		logFile.write('Got "n". Exit script.\n\n')
+		print('Goodbye')
+		sys.exit()
+	else:
+		logFile.write('Got wrong input. Ask again...\n\n')
+		print('Input error. You should type in y or n.')	
+		continue
 
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
