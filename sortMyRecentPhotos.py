@@ -163,13 +163,14 @@ def sortByDate(extLists):
 			logFile.write(file + '\n')
 			#message about mismatch files
 	
-	return len(mismatchedFiles)	
+	return len(mismatchedFiles), yearDict	
 
 ################################## copy PNG  #################################
 
 def copyPng(listOfPng):
-	for item in listOfPng:
-		print(os.path.join(unsortedPhotos, item))
+	print('CopyPng engine started')
+	# for item in listOfPng:
+	# 	print(os.path.join(unsortedPhotos, item))
 
 
 ############################### sortByExtEngine  ##############################			
@@ -227,8 +228,10 @@ def sortByExtEngine():
 
 #############################  copyEngine  ##############################
 
-def copyEngine(extLists):
+def copyEngine(filesByDate):
+	logFile.write('\ncopyEngine started')
 	print('Copy engine doesn\'t exist yet :)')
+
 	
 
 #############################  First menu ############################
@@ -239,9 +242,9 @@ logFile.write('Start to analize for your files? (y/n)\n\n')
 while True:
 	start = input('\nStart to analize your files? (y/n)\nYour answer is: ')
 	if start == 'y':
-		logFile.write('Gots"y". Call sortByExtEngine()\n\n')
+		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		sbeeResult = sortByExtEngine()
-		mismatchedFiles = sortByDate(sbeeResult[0])
+		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -258,10 +261,12 @@ logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles) +
 
 while True:
 	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
-		' files are ready to copy. Start? (y/n)\nnYour answer is: ')
+		' files are ready to copy. Start? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
-		copyEngine(sbeeResult[0])
+		if len(sbeeResult[0]['PNG']) > 0:
+			copyPng(sbeeResult[0]['PNG'])
+		copyEngine(filesByDate)
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
