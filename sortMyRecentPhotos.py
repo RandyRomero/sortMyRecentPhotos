@@ -175,18 +175,20 @@ def sortByExtEngine():
 		'\n\n')
 	files = os.listdir(unsortedPhotos)
 
-	logFile.write('There are ' + str(len(files)) + ' files in ' 
+	allUnsortedFiles = len(files)
+
+	logFile.write('There are ' + str(allUnsortedFiles) + ' files in ' 
 		+ unsortedPhotos + '\n\n')
-	print('\nHere are ' + str(len(files)) + ' unsorted files.')
-	
+	print('\nHere are ' + str(allUnsortedFiles) + ' unsorted files.')
+
 	###figuring out total size of all unsorted files###
 
 	logFile.write('Call sizes()\n\n')
 	logFile.write('Start to figuring out total size of unsorted files\n\n')
 	totalSize = sizes(files)
-	logFile.write('Total size of ' + str(len(files)) + ' files is ' 
+	logFile.write('Total size of ' + str(allUnsortedFiles) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n\n')
-	print('\nTotal size of ' + str(len(files)) + ' files is ' 
+	print('\nTotal size of ' + str(allUnsortedFiles) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
 	######sort out files by extentions######
@@ -216,13 +218,13 @@ def sortByExtEngine():
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention	
 
-	return extLists
+	return extLists, allUnsortedFiles
 
 
 #############################  copyEngine  ##############################
 
-def copyEngine(extLists):
-	sortedPhoto = sortByDate(extLists)
+# def copyEngine(extLists):
+	# sortedPhoto = sortByDate(extLists)
 	
 
 #############################  First menu ############################
@@ -233,9 +235,10 @@ logFile.write('Start to analize for your files? (y/n)\n\n')
 while True:
 	start = input('\nStart to analize your files? (y/n)\nYour answer is: ')
 	if start == 'y':
-		logFile.write('Got "y". Call sortByExtEngine()\n\n')
-		extLists = sortByExtEngine()
-		copyEngine(extLists)
+		logFile.write('Gots"y". Call sortByExtEngine()\n\n')
+		sbeeResult = sortByExtEngine()
+		print('extLists: ' + str(sbeeResult[1]))
+		sortByDate(sbeeResult[0])
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -246,8 +249,28 @@ while True:
 		print('Input error. You should type in y or n')	
 		continue
 
+
+# logFile.write('Start to analize for your files? (y/n)\n\n')
+
+# while True:
+# 	start = input('\nStart to copy ' + ' (y/n)\nYour answer is: ')
+# 	if start == 'y':
+# 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
+# 		extLists = sortByExtEngine()
+# 		copyEngine(extLists)
+# 		break
+# 	elif start == 'n':
+# 		logFile.write('Got "n". Exit script.\n\n')
+# 		print('Goodbye')
+# 		sys.exit()
+# 	else:
+# 		logFile.write('Got wrong input. Ask again...\n\n')
+# 		print('Input error. You should type in y or n')	
+# 		continue
+
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
+
 
 
 #TODO compare of sorted and unsorted in order to figure out
