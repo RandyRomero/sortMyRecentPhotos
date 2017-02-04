@@ -35,7 +35,7 @@ def sizes(files):
 		totalSize += size
 	return totalSize / 1024 / 1024
 
-######################### log files by extention ###############################	
+######################### log files by extention #########################	
 
 def printLogFilesByExt(ilk, listFiles):
 	logFile.write('\nTotal amount of ' + ilk +' files is ' + 
@@ -165,15 +165,7 @@ def sortByDate(extLists):
 	
 	return len(mismatchedFiles), yearDict	
 
-################################## copy PNG  #################################
-
-def copyPng(listOfPng):
-	print('CopyPng engine started')
-	# for item in listOfPng:
-	# 	print(os.path.join(unsortedPhotos, item))
-
-
-############################### sortByExtEngine  ##############################			
+############################### sortByExtEngine  ##########################			
 
 def sortByExtEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
@@ -225,6 +217,26 @@ def sortByExtEngine():
 
 	return extLists, allUnsortedFiles
 
+################################## copy PNG  ############################
+
+def copyPng(listOfPng):
+	print('CopyPng engine started')
+	
+	if os.path.exists(os.path.join(sortedPhotos, 'PNG')):
+		print('\nWarning: folder PNG in destionation folder already exists')
+	else:	
+		os.mkdir(os.path.join(sortedPhotos, 'PNG'))
+
+	for item in listOfPng:
+		if os.path.exists(os.path.join(sortedPhotos, item)):
+			logFile.write(item + ' already in destination folder')
+			continue
+		else:
+			shutil.copy2(os.path.join(unsortedPhotos, item),
+				os.path.join(sortedPhotos, 'PNG', item))
+			logFile.write('\n' + os.path.join(unsortedPhotos, item) + 
+				' > ' + os.path.join(sortedPhotos, 'PNG', item))
+
 
 #############################  copyEngine  ##############################
 
@@ -234,7 +246,7 @@ def copyEngine(filesByDate):
 
 	
 
-#############################  First menu ############################
+#############################  First menu ###############################
 
 
 logFile.write('Start to analize for your files? (y/n)\n\n')
@@ -255,6 +267,7 @@ while True:
 		print('Input error. You should type in y or n')	
 		continue
 
+##################### Menu to ask user to start copying ##################
 
 logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
 	' files are ready to copy. Start? (y/n)\n\n')
@@ -265,7 +278,7 @@ while True:
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
 		if len(sbeeResult[0]['PNG']) > 0:
-			copyPng(sbeeResult[0]['PNG'])
+			copyPng(sbeeResult[0]['PNG']) #pass pngList to copyPng
 		copyEngine(filesByDate)
 		break
 	elif start == 'n':
