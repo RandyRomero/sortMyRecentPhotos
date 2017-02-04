@@ -232,7 +232,7 @@ def copyPng(listOfPng):
 		os.mkdir(os.path.join(sortedPhotos, 'PNG'))
 
 	for item in listOfPng:
-		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)) == True:
+		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)):
 			logFile.write('Error: ' + item + ' already in destination folder\n')
 			alreadyExist += 1
 			continue
@@ -253,8 +253,8 @@ def copyPng(listOfPng):
 			print(str(alreadyExist) + ' PNG files were skipped')
 			logFile.write(str(alreadyExist) + ' PNG files were skipped\n')
 		elif alreadyExist == 0:
-			print('There is not any skipped file')	
-			logFile.write('There is not any skipped file\n')	
+			print('There is no skipped file')	
+			logFile.write('There is no skipped file\n')	
 	else:
 		print('All files(' + str(alreadyExist) + ' from ' 
 			+ str(len(listOfPng)) + ') already exist in destination folder')
