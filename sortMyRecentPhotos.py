@@ -220,7 +220,11 @@ def sortByExtEngine():
 ################################## copy PNG  ############################
 
 def copyPng(listOfPng):
-	print('CopyPng engine started')
+	logFile.write('Copy PNG files...\n')
+	print('Copy PNG files...\n')
+
+	alreadyExist = 0
+	wasCopied = 0
 	
 	if os.path.exists(os.path.join(sortedPhotos, 'PNG')):
 		print('\nWarning: folder PNG in destionation folder already exists')
@@ -228,15 +232,34 @@ def copyPng(listOfPng):
 		os.mkdir(os.path.join(sortedPhotos, 'PNG'))
 
 	for item in listOfPng:
-		if os.path.exists(os.path.join(sortedPhotos, item)):
-			logFile.write(item + ' already in destination folder')
+		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)) == True:
+			logFile.write('Error: ' + item + ' already in destination folder\n')
+			alreadyExist += 1
 			continue
 		else:
 			shutil.copy2(os.path.join(unsortedPhotos, item),
 				os.path.join(sortedPhotos, 'PNG', item))
-			logFile.write('\n' + os.path.join(unsortedPhotos, item) + 
-				' > ' + os.path.join(sortedPhotos, 'PNG', item))
+			wasCopied += 1
+			logFile.write(os.path.join(unsortedPhotos, item) + 
+				' > ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
 
+	if wasCopied > 0:
+		logFile.write(str(wasCopied) + ' PNG files were copied\n')
+		print('\n' + str(wasCopied) + ' PNG files were copied')
+		if alreadyExist == 1:
+			print('There is 1 skipped file')
+			logFile.write('\nThere is 1 skipped file')
+		elif alreadyExist > 1:
+			print(str(alreadyExist) + ' PNG files were skipped')
+			logFile.write(str(alreadyExist) + ' PNG files were skipped\n')
+		elif alreadyExist == 0:
+			print('There is not any skipped file')	
+			logFile.write('There is not any skipped file\n')	
+	else:
+		print('All files(' + str(alreadyExist) + ' from ' 
+			+ str(len(listOfPng)) + ') already exist in destination folder')
+		logFile.write('\nAll files(' + str(alreadyExist) + ' from ' + 
+			str(len(listOfPng)) + ') already exist in destination folder')
 
 #############################  copyEngine  ##############################
 
