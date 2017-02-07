@@ -155,9 +155,9 @@ def sortByDate(extLists):
 
 	if len(mismatchedFiles) > 0:
 		logFile.write('\n\nHere are ' + str(len(mismatchedFiles)) + 
-			' usorted files. They won\'t be copied anywhere:\n')
+			' mismatched files. They won\'t be copied anywhere:\n')
 		print('\nHere are ' + str(len(mismatchedFiles)) + 
-			' unsorted files. They won\'t be copied anywhere:')
+			' mismatched files. They won\'t be copied anywhere:')
 		for file in mismatchedFiles:
 			print(file)
 			logFile.write(file + '\n')
@@ -224,7 +224,7 @@ def renameEngine(path, itemToRename):
 	string2 = '[sorted] ' + string
 	logFile.write(os.path.join(path, itemToRename) + 
 		' rename to ' + os.path.join(path, string2) + '\n')
-	#shutil.move(itemToRename, )
+	shutil.move(os.path.join(path, itemToRename), os.path.join(path, string2))
 
 
 ################################## copy PNG  ############################
