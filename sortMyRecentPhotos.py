@@ -42,7 +42,7 @@ def printLogFilesByExt(ilk, listFiles):
 		str(len(listFiles)))	
 	print('Total amount of ' + ilk + ' files is ' 
 		+ str(len(listFiles)))
-	print('Total size of ' + ilk + ' files is ' + 
+	print('Total size of ' + ilk + ' files is ' + #where is log of total size?
 		str('%0.2f' % sizes(listFiles)) + ' MB\n')
 	logFile.write('\nList of ' + ilk + ' files:\n')	
 	if len(listFiles) < 1:
@@ -72,7 +72,7 @@ def sortByDate(extLists):
 		re.VERBOSE)
 
 	for k, v in extLists.items(): 
-		if k == 'PNG': #k is name of extention
+		if k == 'PNG' or k == 'already sorted': #k is name of list
 				continue
 		for item in v: #v is list of files
 			mo = dateRegex.search(item)
@@ -113,7 +113,7 @@ def sortByDate(extLists):
 	#same lists of files in every year 
 
 	for k, v in extLists.items(): 
-		if k == 'PNG': #k is name of extention
+		if k == 'PNG' or k == 'already sorted': #k is name of extention
 				continue
 		for item in v: #v is list of files
 			mo = dateRegex.search(item)
@@ -190,12 +190,15 @@ def sortByExtEngine():
 
 	######sort out files by extentions######
 	
+	alreadySorted = []
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
 	#the way to declare multiple lists
 
 	logFile.write('Start to sort files by extension...\n\n')
 	for item in os.listdir(unsortedPhotos):
-		if item.endswith('.PNG') or item.endswith('.png'):
+		if item.startswith('[sorted]'):
+			alreadySorted.append(item)
+		elif item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
 		elif (item.endswith('.JPG') or item.endswith('.jpg') 
 			or item.endswith('.JPEG')):
@@ -206,16 +209,25 @@ def sortByExtEngine():
 			otherList.append(item)
 			print(item)
 
-	extLists = collections.OrderedDict([('JPG', jpgList), ('PNG', pngList), 
-		('video', videoList), ('other', otherList)])
+	extLists = collections.OrderedDict([('JPG', jpgList), 
+		('PNG', pngList), 
+		('video', videoList), 
+		('already sorted', alreadySorted),
+		('other', otherList)])
 	#use OrderedDict to preserve insertion order. Python 3.6 default dict can
 	#do it from box but I want to keep compatibility with older versions
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
-	#prints and logs to file list and amount of files by their extention	
+	#prints and logs to file list and amount of files by their extention
 
-	return extLists, allUnsortedFiles
+	if len(alreadySorted) > 0:
+		logFile.write('Here is list of already sorted files: \n')
+		for item in alreadySorted:
+			logFile.write(item + '\n')
+					
+
+	return extLists, allUnsortedFiles, len(alreadySorted)
 
 ############################## rename engine ############################
 
@@ -305,11 +317,12 @@ while True:
 
 ##################### Menu to ask user to start copying ##################
 
-logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
+logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles - sbeeResult[2]) + 
 	' files are ready to copy. Start? (y/n)\n\n')
 
 while True:
-	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
+	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles - 
+		sbeeResult[2]) + 
 		' files are ready to copy. Start? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
