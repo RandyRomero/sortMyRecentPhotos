@@ -6,8 +6,11 @@ import copy, os, shutil, sys, collections, re
 
 if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
 	#mind the syntax: it is 'D:/', neither 'd', nor 'D:', nor "D:/"
+	
 	logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
-	logFile.write('Program started. Log file created\n\n')
+	logFile.write('Program started. Log file was created.\n\n')
+	sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
+	logFile.write('Path to main folders was created\n\n')
 else:
 	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
 	logFile.write(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') 
@@ -22,8 +25,6 @@ else:
 		+ ' doesn\'t exist')
 	sys.exit()
 
-sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
-logFile.write('Path to main folders created\n\n')
 
 ################################## sizes ###############################	
 
