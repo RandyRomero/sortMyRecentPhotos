@@ -105,7 +105,6 @@ def sortByDate(extLists):
 	twelveMonth['12'] = december
 
 	mismatchedFiles = [] #for files that not match regex
-	alreadySorted = [] #for files mark [sorted]
 
 	for year in yearList: 
 		yearDict['{}'.format(year)] = copy.deepcopy(twelveMonth)
@@ -114,11 +113,11 @@ def sortByDate(extLists):
 	#same lists of files in every year 
 
 	for k, v in extLists.items(): 
+		if k == 'PNG': #k is name of extention
+				continue
 		for item in v: #v is list of files
 			mo = dateRegex.search(item)
-			if item.startswith('[sorted]'):
-				alreadySorted.append(item)
-			elif mo != None:
+			if mo != None:
 				yearDict[mo.group(1)][mo.group(2)].append(item)
 				#add file to corresponding location, 
 				#e.g.: year 2016 month january
@@ -163,18 +162,8 @@ def sortByDate(extLists):
 			print(file)
 			logFile.write(file + '\n')
 			#message about mismatch files
-
-	if len(alreadySorted) > 0:
-		logFile.write('\n\nHere are ' + str(len(alreadySorted)) + 
-			' already sorted files. They won\'t be copied anywhere:\n')
-		print('\nHere are ' + str(len(alreadySorted)) + 
-			' already sorted files. They won\'t be copied anywhere:')
-		for file in alreadySorted:
-			print(file)
-			logFile.write(file + '\n')
-			#message about mismatch files		
 	
-	return len(mismatchedFiles), len(alreadySorted), yearDict	
+	return len(mismatchedFiles), yearDict	
 
 ############################### sortByExtEngine  ##########################			
 
@@ -303,7 +292,7 @@ while True:
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		sbeeResult = sortByExtEngine()
-		mismatchedFiles, alreadySorted, filesByDate = sortByDate(sbeeResult[0])
+		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -316,12 +305,11 @@ while True:
 
 ##################### Menu to ask user to start copying ##################
 
-logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles - alreadySorted) + 
+logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
 	' files are ready to copy. Start? (y/n)\n\n')
 
 while True:
-	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles - 
-		alreadySorted) + 
+	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
 		' files are ready to copy. Start? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
