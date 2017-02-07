@@ -217,6 +217,16 @@ def sortByExtEngine():
 
 	return extLists, allUnsortedFiles
 
+############################## rename engine ############################
+
+def renameEngine(path, itemToRename):
+	string = itemToRename
+	string2 = '[sorted] ' + string
+	logFile.write(os.path.join(path, itemToRename) + 
+		' rename to ' + os.path.join(path, string2) + '\n')
+	#shutil.move(itemToRename, )
+
+
 ################################## copy PNG  ############################
 
 def copyPng(listOfPng):
@@ -234,14 +244,17 @@ def copyPng(listOfPng):
 	for item in listOfPng:
 		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)):
 			logFile.write('Error: ' + item + ' already in destination folder\n')
-			alreadyExist += 1
+			alreadyExist += 1 #count skipped files
 			continue
 		else:
-			shutil.copy2(os.path.join(unsortedPhotos, item),
-				os.path.join(sortedPhotos, 'PNG', item))
-			wasCopied += 1
+			shutil.copy2(os.path.join(unsortedPhotos, item), 
+				os.path.join(sortedPhotos, 'PNG', item)) #copy file
 			logFile.write(os.path.join(unsortedPhotos, item) + 
-				' > ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
+				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
+			#log which and where to file was copied
+			renameEngine(unsortedPhotos, item) #rename file as [sorted]
+			wasCopied += 1 #count how many files were copied
+			
 
 	if wasCopied > 0:
 		logFile.write(str(wasCopied) + ' PNG files were copied\n')
@@ -254,9 +267,9 @@ def copyPng(listOfPng):
 			logFile.write(str(alreadyExist) + ' PNG files were skipped\n')
 		elif alreadyExist == 0:
 			print('There is no skipped file')	
-			logFile.write('There is no skipped file\n')	
+			logFile.write('There are no skipped files\n')	
 	else:
-		print('All files(' + str(alreadyExist) + ' from ' 
+		print('All files (' + str(alreadyExist) + ' from ' 
 			+ str(len(listOfPng)) + ') already exist in destination folder')
 		logFile.write('\nAll files(' + str(alreadyExist) + ' from ' + 
 			str(len(listOfPng)) + ') already exist in destination folder')
