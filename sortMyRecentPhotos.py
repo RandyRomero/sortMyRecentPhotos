@@ -190,14 +190,11 @@ def sortByExtEngine():
 
 	######sort out files by extentions######
 	
-	alreadySorted = []
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
 	#the way to declare multiple lists
 
 	logFile.write('Start to sort files by extension...\n\n')
 	for item in os.listdir(unsortedPhotos):
-		if item.startswith('[sorted]'):
-			alreadySorted.append(item)
 		elif item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
 		elif (item.endswith('.JPG') or item.endswith('.jpg') 
@@ -220,26 +217,26 @@ def sortByExtEngine():
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention
 
-	if len(alreadySorted) > 0:
-		print('Warning: ' + str(len(alreadySorted)) + ' already sorted files.')
-		logFile.write('Warning: ' + str(len(alreadySorted)) + 
-			' already sorted files.\n')
-		logFile.write('Here is list of already sorted files: \n')
-		for item in alreadySorted:
-			logFile.write(item + '\n')
+
 					
 
 	return extLists, allUnsortedFiles, len(alreadySorted)
 
-############################## rename engine ############################
+######################## Check already sorted files  ####################
 
-def renameEngine(path, itemToRename):
-	string = itemToRename
-	string2 = '[sorted] ' + string
-	logFile.write(os.path.join(path, itemToRename) + 
-		' rename to ' + os.path.join(path, string2) + '\n')
-	shutil.move(os.path.join(path, itemToRename), os.path.join(path, string2))
+	def checkAlreadySortedFiles():
+		
+	
 
+	#### message about already sorted files ###
+
+	# if len(alreadySorted) > 0: 
+	# 	print('Warning: ' + str(len(alreadySorted)) + ' already sorted files.')
+	# 	logFile.write('Warning: ' + str(len(alreadySorted)) + 
+	# 		' already sorted files.\n')
+	# 	logFile.write('Here is list of already sorted files: \n')
+	# 	for item in alreadySorted:
+	# 		logFile.write(item + '\n')
 
 ################################## copy PNG  ############################
 
