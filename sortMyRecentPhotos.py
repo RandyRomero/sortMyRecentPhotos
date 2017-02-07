@@ -14,7 +14,7 @@ else:
 		+ ' doesn\'t exist')
 	sys.exit()
 
-if os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos'):
+if os.pa.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
 	unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
 else:
 	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
@@ -225,7 +225,7 @@ def sortByExtEngine():
 ######################## Check already sorted files  ####################
 
 	def checkAlreadySortedFiles():
-		
+
 	
 
 	#### message about already sorted files ###
@@ -302,6 +302,7 @@ while True:
 	start = input('\nStart to analize your files? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
+		#checkAlreadySortedFiles()
 		sbeeResult = sortByExtEngine()
 		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
 		break
