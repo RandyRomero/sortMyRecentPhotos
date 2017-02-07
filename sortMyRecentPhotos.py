@@ -210,10 +210,9 @@ def sortByExtEngine():
 			print(item)
 
 	extLists = collections.OrderedDict([('JPG', jpgList), 
-		('PNG', pngList), 
-		('video', videoList), 
-		('already sorted', alreadySorted),
-		('other', otherList)])
+										('PNG', pngList), 
+										('video', videoList), 
+										('other', otherList)])
 	#use OrderedDict to preserve insertion order. Python 3.6 default dict can
 	#do it from box but I want to keep compatibility with older versions
 
@@ -222,6 +221,9 @@ def sortByExtEngine():
 	#prints and logs to file list and amount of files by their extention
 
 	if len(alreadySorted) > 0:
+		print('Warning: ' + str(len(alreadySorted)) + ' already sorted files.')
+		logFile.write('Warning: ' + str(len(alreadySorted)) + 
+			' already sorted files.\n')
 		logFile.write('Here is list of already sorted files: \n')
 		for item in alreadySorted:
 			logFile.write(item + '\n')
