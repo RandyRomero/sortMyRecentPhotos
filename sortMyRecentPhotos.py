@@ -171,7 +171,9 @@ def sortByDate(extLists):
 def checkAlreadySortedFiles(unsortedPhotos):
 		if os.path.exists(os.path.join(unsortedPhotos, '_sync')):
 			print(os.path.join(unsortedPhotos, '_sync') + ' exists.')
-			syncDB = shelve.open(os.path.join(unsortedPhotos, '_sync', 'filesyncDB'))
+			global syncDB 
+			syncDB = shelve.open(os.path.join(unsortedPhotos, 
+								'_sync', 'filesyncDB'))
 
 			try:
 				alreadySorted = syncDB['as']
@@ -187,8 +189,6 @@ def checkAlreadySortedFiles(unsortedPhotos):
 			alreadySorted = []
 			syncDB['as'] = alreadySorted
 			print('List of files has been already in the DB') 
-
-		return syncDB
 
 	#### message about already sorted files ###
 
@@ -206,8 +206,12 @@ def sortByExtEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
 		'\n\n')
 
-	listUnsortedFiles = os.listdir(unsortedPhotos)
-	NumAllUnsortedFiles = len(listUnsortedFiles) - 1
+	alreadySorted = syncDB['as']
+	allUnsortedFiles = os.listdir(unsortedPhotos)
+	for i in allUnsortedFiles:
+		if i in alreadySorted:
+			allUnsortedFiles.remove(i)
+	NumAllUnsortedFiles = len(allUnsortedFiles) - 1
 	# number of all unsorted files (-1 because of _sync folder)
 
 	logFile.write('There are ' + str(NumAllUnsortedFiles) + ' files in ' 
@@ -218,7 +222,7 @@ def sortByExtEngine():
 
 	logFile.write('Call sizes()\n\n')
 	logFile.write('Start to figuring out total size of unsorted files\n\n')
-	totalSize = sizes(listUnsortedFiles)
+	totalSize = sizes(allUnsortedFiles)
 	logFile.write('Total size of ' + str(NumAllUnsortedFiles) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n\n')
 	print('\nTotal size of ' + str(NumAllUnsortedFiles) + ' files is ' 
@@ -309,6 +313,8 @@ def copyPng(listOfPng):
 		logFile.write('\nAll files(' + str(alreadyExist) + ' from ' + 
 			str(len(listOfPng)) + ') already exist in destination folder')
 
+	syncDB['as'] = alreadySorted	
+
 #############################  copyEngine  ##############################
 
 def copyEngine(filesByDate):
@@ -327,7 +333,7 @@ while True:
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		#checkAlreadySortedFiles()
-		syncDB = checkAlreadySortedFiles(unsortedPhotos)
+		checkAlreadySortedFiles(unsortedPhotos)
 		sbeeResult = sortByExtEngine()
 		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
 		break
