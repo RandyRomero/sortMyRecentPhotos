@@ -207,7 +207,8 @@ def sortByExtEngine():
 		'\n\n')
 
 	listUnsortedFiles = os.listdir(unsortedPhotos)
-	NumAllUnsortedFiles = len(listUnsortedFiles) # number of all unsorted files
+	NumAllUnsortedFiles = len(listUnsortedFiles) - 1
+	# number of all unsorted files (-1 because of _sync folder)
 
 	logFile.write('There are ' + str(NumAllUnsortedFiles) + ' files in ' 
 		+ unsortedPhotos + '\n\n')
@@ -262,6 +263,7 @@ def copyPng(listOfPng):
 	logFile.write('Copy PNG files...\n')
 	print('Copy PNG files...\n')
 
+	alreadySorted = syncDB['as'] #get list of already sorted files
 	alreadyExist = 0
 	wasCopied = 0
 	
@@ -272,15 +274,22 @@ def copyPng(listOfPng):
 
 	for item in listOfPng:
 		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)):
-			logFile.write('Error: ' + item + ' already in destination folder\n')
+			logFile.write('Error: ' + item + 
+				' already is in destination folder\n')
 			alreadyExist += 1 #count skipped files
 			continue
 		else:
 			shutil.copy2(os.path.join(unsortedPhotos, item), 
 				os.path.join(sortedPhotos, 'PNG', item)) #copy file
+			if item not in alreadySorted:
+				alreadySorted.append(item)
 			logFile.write(os.path.join(unsortedPhotos, item) + 
 				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
 			#log which and where to file was copied
+	print('Already sorted list: ')
+	for item in alreadySorted:
+		print(item)
+
 
 	if wasCopied > 0:
 		logFile.write(str(wasCopied) + ' PNG files were copied\n')
