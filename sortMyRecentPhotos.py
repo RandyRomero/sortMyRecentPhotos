@@ -169,9 +169,10 @@ def sortByDate(extLists):
 ######################## Check already sorted files  ####################
 
 def checkAlreadySortedFiles(unsortedPhotos):
+		global syncDB
+
 		if os.path.exists(os.path.join(unsortedPhotos, '_sync')):
 			print(os.path.join(unsortedPhotos, '_sync') + ' exists.')
-			global syncDB 
 			syncDB = shelve.open(os.path.join(unsortedPhotos, 
 								'_sync', 'filesyncDB'))
 
