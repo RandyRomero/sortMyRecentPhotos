@@ -286,15 +286,12 @@ def copyPng(listOfPng):
 		else:
 			shutil.copy2(os.path.join(unsortedPhotos, item), 
 				os.path.join(sortedPhotos, 'PNG', item)) #copy file
+			wasCopied += 1
 			if item not in alreadySorted:
 				alreadySorted.append(item)
 			logFile.write(os.path.join(unsortedPhotos, item) + 
 				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
 			#log which and where to file was copied
-	print('Already sorted list: ')
-	for item in alreadySorted:
-		print(item)
-
 
 	if wasCopied > 0:
 		logFile.write(str(wasCopied) + ' PNG files were copied\n')
@@ -306,8 +303,8 @@ def copyPng(listOfPng):
 			print(str(alreadyExist) + ' PNG files were skipped')
 			logFile.write(str(alreadyExist) + ' PNG files were skipped\n')
 		elif alreadyExist == 0:
-			print('There is no skipped file')	
-			logFile.write('There are no skipped files\n')	
+			print('There is no skipped file')
+			logFile.write('There are no skipped files\n')
 	else:
 		print('All files (' + str(alreadyExist) + ' from ' 
 			+ str(len(listOfPng)) + ') already exist in destination folder')
