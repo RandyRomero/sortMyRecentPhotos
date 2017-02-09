@@ -1,6 +1,6 @@
 #!python3 
 
-import copy, os, shutil, sys, collections, re
+import copy, os, shelve, shutil, sys, collections, re
 
 ########################check if folder for work exist#################
 
@@ -17,7 +17,7 @@ else:
 		+ ' doesn\'t exist')
 	sys.exit()
 
-if os.pa.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
+if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
 	unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
 else:
 	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
@@ -164,29 +164,64 @@ def sortByDate(extLists):
 			logFile.write(file + '\n')
 			#message about mismatch files
 	
-	return len(mismatchedFiles), yearDict	
+	return len(mismatchedFiles), yearDict
+
+######################## Check already sorted files  ####################
+
+def checkAlreadySortedFiles(unsortedPhotos):
+		if os.path.exists(os.path.join(unsortedPhotos, '_sync')):
+			print(os.path.join(unsortedPhotos, '_sync') + ' exists.')
+			syncDB = shelve.open(os.path.join(unsortedPhotos, '_sync', 'filesyncDB'))
+
+			try:
+				alreadySorted = syncDB['as']
+			except KeyError:
+				print('Database doesn\'t have list of files')
+				alreadySorted = []
+				syncDB['as'] = alreadySorted
+			#extract list of file nsmes from shelve
+		else:
+			print(os.path.join(unsortedPhotos, '_sync') + ' doesn\'t exists')
+			os.mkdir(os.path.join(unsortedPhotos, '_sync'))
+			syncDB = shelve.open(os.path.join(unsortedPhotos, '_sync', 'filesyncDB'))
+			alreadySorted = []
+			syncDB['as'] = alreadySorted
+			print('List of files has been already in the DB') 
+
+		return syncDB
+
+	#### message about already sorted files ###
+
+	# if len(alreadySorted) > 0: 
+	# 	print('Warning: ' + str(len(alreadySorted)) + ' already sorted files.')
+	# 	logFile.write('Warning: ' + str(len(alreadySorted)) + 
+	# 		' already sorted files.\n')
+	# 	logFile.write('Here is list of already sorted files: \n')
+	# 	for item in alreadySorted:
+	# 		logFile.write(item + '\n')		
 
 ############################### sortByExtEngine  ##########################			
 
 def sortByExtEngine():
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
 		'\n\n')
-	files = os.listdir(unsortedPhotos)
 
-	allUnsortedFiles = len(files)
+	listUnsortedFiles = os.listdir(unsortedPhotos)
+	syncDB = checkAlreadySortedFiles(unsortedPhotos)
+	NumAllUnsortedFiles = len(listUnsortedFiles) # number of all unsorted files
 
-	logFile.write('There are ' + str(allUnsortedFiles) + ' files in ' 
+	logFile.write('There are ' + str(NumAllUnsortedFiles) + ' files in ' 
 		+ unsortedPhotos + '\n\n')
-	print('\nHere are ' + str(allUnsortedFiles) + ' unsorted files.')
+	print('\nHere are ' + str(NumAllUnsortedFiles) + ' unsorted files.')
 
 	###figuring out total size of all unsorted files###
 
 	logFile.write('Call sizes()\n\n')
 	logFile.write('Start to figuring out total size of unsorted files\n\n')
-	totalSize = sizes(files)
-	logFile.write('Total size of ' + str(allUnsortedFiles) + ' files is ' 
+	totalSize = sizes(listUnsortedFiles)
+	logFile.write('Total size of ' + str(NumAllUnsortedFiles) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n\n')
-	print('\nTotal size of ' + str(allUnsortedFiles) + ' files is ' 
+	print('\nTotal size of ' + str(NumAllUnsortedFiles) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
 	######sort out files by extentions######
@@ -196,16 +231,17 @@ def sortByExtEngine():
 
 	logFile.write('Start to sort files by extension...\n\n')
 	for item in os.listdir(unsortedPhotos):
-		elif item.endswith('.PNG') or item.endswith('.png'):
+		if item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
 		elif (item.endswith('.JPG') or item.endswith('.jpg') 
 			or item.endswith('.JPEG')):
 			jpgList.append(item)
 		elif item.endswith('.MP4') or item.endswith('.3GP'):
 			videoList.append(item)
+		elif item == '_sync':
+			continue
 		else:
 			otherList.append(item)
-			print(item)
 
 	extLists = collections.OrderedDict([('JPG', jpgList), 
 										('PNG', pngList), 
@@ -221,23 +257,7 @@ def sortByExtEngine():
 
 					
 
-	return extLists, allUnsortedFiles, len(alreadySorted)
-
-######################## Check already sorted files  ####################
-
-	def checkAlreadySortedFiles():
-
-	
-
-	#### message about already sorted files ###
-
-	# if len(alreadySorted) > 0: 
-	# 	print('Warning: ' + str(len(alreadySorted)) + ' already sorted files.')
-	# 	logFile.write('Warning: ' + str(len(alreadySorted)) + 
-	# 		' already sorted files.\n')
-	# 	logFile.write('Here is list of already sorted files: \n')
-	# 	for item in alreadySorted:
-	# 		logFile.write(item + '\n')
+	return extLists, NumAllUnsortedFiles
 
 ################################## copy PNG  ############################
 
@@ -318,12 +338,11 @@ while True:
 
 ##################### Menu to ask user to start copying ##################
 
-logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles - sbeeResult[2]) + 
+logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
 	' files are ready to copy. Start? (y/n)\n\n')
 
 while True:
-	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles - 
-		sbeeResult[2]) + 
+	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
 		' files are ready to copy. Start? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
@@ -340,9 +359,9 @@ while True:
 		print('Input error. You should type in y or n.')	
 		continue
 
+syncDB.close()
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
-
 
 
 #TODO compare of sorted and unsorted in order to figure out
