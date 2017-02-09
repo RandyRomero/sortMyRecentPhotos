@@ -254,9 +254,6 @@ def sortByExtEngine():
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention
 
-
-					
-
 	return extLists, NumAllUnsortedFiles
 
 ################################## copy PNG  ############################
@@ -284,9 +281,6 @@ def copyPng(listOfPng):
 			logFile.write(os.path.join(unsortedPhotos, item) + 
 				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
 			#log which and where to file was copied
-			renameEngine(unsortedPhotos, item) #rename file as [sorted]
-			wasCopied += 1 #count how many files were copied
-			
 
 	if wasCopied > 0:
 		logFile.write(str(wasCopied) + ' PNG files were copied\n')
@@ -359,7 +353,6 @@ while True:
 		print('Input error. You should type in y or n.')	
 		continue
 
-syncDB.close()
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
 
