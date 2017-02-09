@@ -208,17 +208,26 @@ def sortByExtEngine():
 		'\n\n')
 
 	alreadySorted = syncDB['as']
+	NumAlreadySorted = 0
 	allUnsortedFiles = os.listdir(unsortedPhotos)
 	for i in allUnsortedFiles:
 		if i in alreadySorted:
 			allUnsortedFiles.remove(i)
+			NumAlreadySorted += 1
 	NumAllUnsortedFiles = len(allUnsortedFiles) - 1
 	# number of all unsorted files (-1 because of _sync folder)
 
 	logFile.write('There are ' + str(NumAllUnsortedFiles) + ' files in ' 
 		+ unsortedPhotos + '\n\n')
-	print('\nHere are ' + str(NumAllUnsortedFiles) + ' unsorted files.')
-
+	if NumAlreadySorted == 0:
+		print('\nHere are ' + str(NumAllUnsortedFiles) + ' unsorted files')
+		logFile.write('\nHere are ' + str(NumAllUnsortedFiles) + 
+			' unsorted files\n')
+	else:	
+		print('\nHere are ' + str(NumAllUnsortedFiles) + 
+			' unsorted files but ' + str(NumAlreadySorted) + ' already sorted')
+		logFile.write('\nHere are ' + str(NumAllUnsortedFiles) + 
+			' unsorted files but ' + str(NumAlreadySorted) + ' already sorted')
 	###figuring out total size of all unsorted files###
 
 	logFile.write('Call sizes()\n\n')
