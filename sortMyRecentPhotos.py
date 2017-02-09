@@ -207,7 +207,6 @@ def sortByExtEngine():
 		'\n\n')
 
 	listUnsortedFiles = os.listdir(unsortedPhotos)
-	syncDB = checkAlreadySortedFiles(unsortedPhotos)
 	NumAllUnsortedFiles = len(listUnsortedFiles) # number of all unsorted files
 
 	logFile.write('There are ' + str(NumAllUnsortedFiles) + ' files in ' 
@@ -228,6 +227,7 @@ def sortByExtEngine():
 	
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
 	#the way to declare multiple lists
+
 
 	logFile.write('Start to sort files by extension...\n\n')
 	for item in os.listdir(unsortedPhotos):
@@ -318,6 +318,7 @@ while True:
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		#checkAlreadySortedFiles()
+		syncDB = checkAlreadySortedFiles(unsortedPhotos)
 		sbeeResult = sortByExtEngine()
 		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
 		break
@@ -353,6 +354,7 @@ while True:
 		print('Input error. You should type in y or n.')	
 		continue
 
+syncDB.close()
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
 
