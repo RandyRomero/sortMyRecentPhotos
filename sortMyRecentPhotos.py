@@ -172,7 +172,7 @@ def checkAlreadySortedFiles(unsortedPhotos):
 		global syncDB
 
 		if os.path.exists(os.path.join(unsortedPhotos, '_sync')):
-			print(os.path.join(unsortedPhotos, '_sync') + ' exists.')
+			logFile.write(os.path.join(unsortedPhotos, '_sync') + ' exists.\n')
 			syncDB = shelve.open(os.path.join(unsortedPhotos, 
 								'_sync', 'filesyncDB'))
 
@@ -186,7 +186,8 @@ def checkAlreadySortedFiles(unsortedPhotos):
 		else:
 			print(os.path.join(unsortedPhotos, '_sync') + ' doesn\'t exists')
 			os.mkdir(os.path.join(unsortedPhotos, '_sync'))
-			syncDB = shelve.open(os.path.join(unsortedPhotos, '_sync', 'filesyncDB'))
+			syncDB = shelve.open(os.path.join(unsortedPhotos, 
+									'_sync', 'filesyncDB'))
 			alreadySorted = []
 			syncDB['as'] = alreadySorted
 			print('List of files has been already in the DB') 
@@ -197,9 +198,7 @@ def checkAlreadySortedFiles(unsortedPhotos):
 	# 	print('Warning: ' + str(len(alreadySorted)) + ' already sorted files.')
 	# 	logFile.write('Warning: ' + str(len(alreadySorted)) + 
 	# 		' already sorted files.\n')
-	# 	logFile.write('Here is list of already sorted files: \n')
-	# 	for item in alreadySorted:
-	# 		logFile.write(item + '\n')		
+	# 		
 
 ############################### sortByExtEngine  ##########################			
 
@@ -217,17 +216,22 @@ def sortByExtEngine():
 	NumAllUnsortedFiles = len(allUnsortedFiles) - 1
 	# number of all unsorted files (-1 because of _sync folder)
 
-	logFile.write('There are ' + str(NumAllUnsortedFiles) + ' files in ' 
-		+ unsortedPhotos + '\n\n')
 	if NumAlreadySorted == 0:
-		print('\nHere are ' + str(NumAllUnsortedFiles) + ' unsorted files')
+		print('\nHere are ' + str(NumAllUnsortedFiles) + ' unsorted files in ' + 
+		 unsortedPhotos)
 		logFile.write('\nHere are ' + str(NumAllUnsortedFiles) + 
-			' unsorted files\n')
+			' unsorted files in ' + unsortedPhotos + '\n')
 	else:	
 		print('\nHere are ' + str(NumAllUnsortedFiles) + 
 			' unsorted files but ' + str(NumAlreadySorted) + ' already sorted')
 		logFile.write('\nHere are ' + str(NumAllUnsortedFiles) + 
-			' unsorted files but ' + str(NumAlreadySorted) + ' already sorted')
+			' unsorted files but ' + str(NumAlreadySorted) + 
+			' already sorted\n')
+		logFile.write('Here is list of already sorted files: \n')
+		for item in alreadySorted:
+			logFile.write(item + '\n')	
+
+
 	###figuring out total size of all unsorted files###
 
 	logFile.write('Call sizes()\n\n')
