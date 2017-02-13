@@ -209,10 +209,33 @@ def sortByExtEngine():
 	alreadySorted = syncDB['as']
 	NumAlreadySorted = 0
 	allUnsortedFiles = os.listdir(unsortedPhotos)
+	print('Lenght of already sorted files is ' + str(len(alreadySorted)))
+
+	counter = 0
+	for y in alreadySorted:
+		if y.endswith('.PNG'):
+			counter += 1
+			print(counter)
+	counter = 0
+	for y in allUnsortedFiles:
+		if y.endswith('.PNG'):
+			counter += 1
+			print(counter)
 	for i in allUnsortedFiles:
 		if i in alreadySorted:
 			allUnsortedFiles.remove(i)
+			#print('Length of unsorted files\' list is: ' + str(len(allUnsortedFiles)))
 			NumAlreadySorted += 1
+			if i.endswith('.PNG'):
+				print(str(NumAlreadySorted) + '. ' + i)
+		#else:
+			#print(i + ' allegedly doesn\'t exists in already sorted.')
+	counter = 0
+	for y in allUnsortedFiles:
+		if y.endswith('.PNG'):
+			counter += 1
+			print(counter)			
+	
 	NumAllUnsortedFiles = len(allUnsortedFiles) - 1
 	# number of all unsorted files (-1 because of _sync folder)
 
@@ -249,7 +272,7 @@ def sortByExtEngine():
 
 
 	logFile.write('Start to sort files by extension...\n\n')
-	for item in os.listdir(unsortedPhotos):
+	for item in allUnsortedFiles:
 		if item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
 		elif (item.endswith('.JPG') or item.endswith('.jpg') 
@@ -289,7 +312,7 @@ def copyPng(listOfPng):
 		print('\nWarning: folder PNG in destionation folder already exists')
 	else:	
 		os.mkdir(os.path.join(sortedPhotos, 'PNG'))
-
+	i = 0	
 	for item in listOfPng:
 		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)):
 			logFile.write('Error: ' + item + 
@@ -302,6 +325,9 @@ def copyPng(listOfPng):
 			wasCopied += 1
 			if item not in alreadySorted:
 				alreadySorted.append(item)
+			elif item in alreadySorted:
+				print(str(i) + '. ' + item + ' in sorted db.')
+				i += 1 	
 			logFile.write(os.path.join(unsortedPhotos, item) + 
 				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
 			#log which and where to file was copied
