@@ -2,29 +2,6 @@
 
 import copy, os, shelve, shutil, sys, collections, re
 
-########################check if folder for work exist#################
-
-if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
-	#mind the syntax: it is 'D:/', neither 'd', nor 'D:', nor "D:/"
-	
-	logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
-	logFile.write('Program started. Log file was created.\n\n')
-	sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
-	logFile.write('Path to main folders was created\n\n')
-else:
-	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
-	logFile.write(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') 
-		+ ' doesn\'t exist')
-	sys.exit()
-
-if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
-	unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
-else:
-	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
-	logFile.write(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') 
-		+ ' doesn\'t exist')
-	sys.exit()
-
 
 ################################## sizes ###############################	
 
@@ -339,7 +316,28 @@ def copyEngine(filesByDate):
 	logFile.write('\ncopyEngine started')
 	print('Copy engine doesn\'t exist yet :)')
 
+########################check if folder for work exist#################
+
+if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
+	#mind the syntax: it is 'D:/', neither 'd', nor 'D:', nor "D:/"
 	
+	logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
+	logFile.write('Program started. Log file was created.\n\n')
+	sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
+	logFile.write('Path to main folders was created\n\n')
+else:
+	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
+	logFile.write(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') 
+		+ ' doesn\'t exist')
+	sys.exit()
+
+if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
+	unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
+else:
+	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
+	logFile.write(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') 
+		+ ' doesn\'t exist')
+	sys.exit()	
 
 #############################  First menu ###############################
 
