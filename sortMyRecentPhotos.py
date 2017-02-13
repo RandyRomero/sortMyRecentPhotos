@@ -207,47 +207,28 @@ def sortByExtEngine():
 		'\n\n')
 
 	alreadySorted = syncDB['as']
-	NumAlreadySorted = 0
 	allUnsortedFiles = os.listdir(unsortedPhotos)
-	print('Lenght of already sorted files is ' + str(len(alreadySorted)))
 
-	counter = 0
-	for y in alreadySorted:
-		if y.endswith('.PNG'):
-			counter += 1
-			print(counter)
-	counter = 0
-	for y in allUnsortedFiles:
-		if y.endswith('.PNG'):
-			counter += 1
-			print(counter)
-	for i in allUnsortedFiles:
-		if i in alreadySorted:
-			allUnsortedFiles.remove(i)
-			#print('Length of unsorted files\' list is: ' + str(len(allUnsortedFiles)))
-			NumAlreadySorted += 1
-			if i.endswith('.PNG'):
-				print(str(NumAlreadySorted) + '. ' + i)
-		#else:
-			#print(i + ' allegedly doesn\'t exists in already sorted.')
-	counter = 0
-	for y in allUnsortedFiles:
-		if y.endswith('.PNG'):
-			counter += 1
-			print(counter)			
+	whithoutAlreadySorted = [x for x in allUnsortedFiles 
+							if x not in alreadySorted]
+	#create new list by 'list comprehension'. If item from AllUnsotredFiles 
+	#not in alreadySorted it appends in whithoutAlreadySorted	
+
+	NumAlreadySorted = len(allUnsortedFiles) - len(whithoutAlreadySorted)
+	#get number of already sorted files
 	
-	NumAllUnsortedFiles = len(allUnsortedFiles) - 1
-	# number of all unsorted files (-1 because of _sync folder)
+	NumWithoutAlreadySorted = len(whithoutAlreadySorted) - 1
+	#number of all unsorted files (-1 because of _sync folder)
 
 	if NumAlreadySorted == 0:
-		print('\nHere are ' + str(NumAllUnsortedFiles) + ' unsorted files in ' + 
-		 unsortedPhotos)
-		logFile.write('\nHere are ' + str(NumAllUnsortedFiles) + 
+		print('\nHere are ' + str(NumWithoutAlreadySorted) + 
+			' unsorted files in ' + unsortedPhotos)
+		logFile.write('\nHere are ' + str(NumWithoutAlreadySorted) + 
 			' unsorted files in ' + unsortedPhotos + '\n')
 	else:	
-		print('\nHere are ' + str(NumAllUnsortedFiles) + 
+		print('\nHere are ' + str(NumWithoutAlreadySorted) + 
 			' unsorted files but ' + str(NumAlreadySorted) + ' already sorted')
-		logFile.write('\nHere are ' + str(NumAllUnsortedFiles) + 
+		logFile.write('\nHere are ' + str(NumWithoutAlreadySorted) + 
 			' unsorted files but ' + str(NumAlreadySorted) + 
 			' already sorted\n')
 		logFile.write('Here is list of already sorted files: \n')
@@ -259,10 +240,10 @@ def sortByExtEngine():
 
 	logFile.write('Call sizes()\n\n')
 	logFile.write('Start to figuring out total size of unsorted files\n\n')
-	totalSize = sizes(allUnsortedFiles)
-	logFile.write('Total size of ' + str(NumAllUnsortedFiles) + ' files is ' 
+	totalSize = sizes(whithoutAlreadySorted)
+	logFile.write('Total size of ' + str(NumWithoutAlreadySorted) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n\n')
-	print('\nTotal size of ' + str(NumAllUnsortedFiles) + ' files is ' 
+	print('\nTotal size of ' + str(NumWithoutAlreadySorted) + ' files is ' 
 		+ str("%0.2f" % totalSize) + ' MB\n')
 
 	######sort out files by extentions######
@@ -272,7 +253,7 @@ def sortByExtEngine():
 
 
 	logFile.write('Start to sort files by extension...\n\n')
-	for item in allUnsortedFiles:
+	for item in whithoutAlreadySorted:
 		if item.endswith('.PNG') or item.endswith('.png'):
 			pngList.append(item)
 		elif (item.endswith('.JPG') or item.endswith('.jpg') 
@@ -296,7 +277,7 @@ def sortByExtEngine():
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention
 
-	return extLists, NumAllUnsortedFiles
+	return extLists, NumWithoutAlreadySorted
 
 ################################## copy PNG  ############################
 
