@@ -160,7 +160,8 @@ def checkAlreadySortedFiles(unsortedPhotos):
 			syncDB['as'] = alreadySorted
 		#extract list of file names from shelve
 	else:
-		logFile.write(os.path.join(unsortedPhotos, '_sync') + ' doesn\'t exist\n')
+		logFile.write(os.path.join(unsortedPhotos, '_sync') + 
+			' doesn\'t exist\n')
 		os.mkdir(os.path.join(unsortedPhotos, '_sync'))
 		syncDB = shelve.open(os.path.join(unsortedPhotos, 
 								'_sync', 'filesyncDB'))
@@ -353,8 +354,6 @@ while True:
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
 		print('Goodbye')
-		logFile.close()
-		syncDB.close()
 		sys.exit()
 	else:
 		logFile.write('Got wrong input. Ask again...\n\n')
