@@ -203,13 +203,12 @@ def checkAlreadySortedFiles(unsortedPhotos):
 		for item in interception:
 			logFile.write(item + '\n')
 
-	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted		
+	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted
 
 ############################### sortByExtEngine  ##########################			
 
 def sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted):
 	
-
 	######sort out files by extentions######
 	
 	jpgList, pngList, videoList, otherList = ([] for i in range(4))
@@ -225,7 +224,7 @@ def sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted):
 			jpgList.append(item)
 		elif item.endswith('.MP4') or item.endswith('.3GP'):
 			videoList.append(item)
-		elif item == '_sync':
+		elif item == '_sync': #skip folder with database
 			continue
 		else:
 			otherList.append(item)
@@ -337,7 +336,7 @@ while True:
 		#checkAlreadySortedFiles()
 		a = checkAlreadySortedFiles(unsortedPhotos)
 		numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted = a
-		#a just to devide statement by two lines
+		#'a' just to devide statement by two lines
 		
 		###figuring out total size of all unsorted files###
 		logFile.write('Call sizes()\n\n')
@@ -354,6 +353,8 @@ while True:
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
 		print('Goodbye')
+		logFile.close()
+		syncDB.close()
 		sys.exit()
 	else:
 		logFile.write('Got wrong input. Ask again...\n\n')
