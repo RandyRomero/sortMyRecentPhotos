@@ -303,6 +303,19 @@ def copyEngine(filesByDate):
 	logFile.write('\ncopyEngine started')
 	print('Copy engine doesn\'t exist yet :)')
 
+	alreadySorted = syncDB['as'] #get list of already sorted files
+	alreadyExist = 0
+	wasCopied = 0
+
+	for yearDictKey, year in filesByDate.items():
+		if not os.path.exists(os.path.join(sortedPhotos, yearDictKey)):
+			os.mkdir(os.path.join(sortedPhotos, yearDictKey))
+			logFile.write(os.path.join(sortedPhotos, yearDictKey) 
+				+ ' was ctreated')
+		#for monthDictKey, month in year.items():
+			#if len(month) != 0:
+				#if not os.path.exists(os.path.join(unsortedPhotos, ))
+
 ########################check if folder for work exist#################
 
 if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
@@ -313,17 +326,19 @@ if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
 	sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
 	logFile.write('Path to main folders was created\n\n')
 else:
-	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
-	logFile.write(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') 
-		+ ' doesn\'t exist')
+	print(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
+		' doesn\'t exist')
+	logFile.write(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
+		' doesn\'t exist')
 	sys.exit()
 
 if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
 	unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
 else:
-	print(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
-	logFile.write(os.path.join('D:', 'PythonPhoto', 'sortedPhotos') 
-		+ ' doesn\'t exist')
+	print(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
+		' doesn\'t exist')
+	logFile.write(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
+		' doesn\'t exist')
 	sys.exit()	
 
 #############################  First menu ###############################
