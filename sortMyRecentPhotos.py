@@ -270,9 +270,9 @@ def copyPng(listOfPng):
 			wasCopied += 1
 			if item not in alreadySorted:
 				alreadySorted.append(item)
-			elif item in alreadySorted:
-				print(str(i) + '. ' + item + ' in sorted db.')
-				i += 1 	
+			# elif item in alreadySorted:
+			# 	print(str(i) + '. ' + item + ' in sorted db.')
+			# 	i += 1 	
 			logFile.write(os.path.join(unsortedPhotos, item) + 
 				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
 			#log which and where to file was copied
@@ -324,21 +324,35 @@ def copyEngine(filesByDate):
 		if not os.path.exists(os.path.join(sortedPhotos, yearDictKey)):
 			os.mkdir(os.path.join(sortedPhotos, yearDictKey))
 			logFile.write(os.path.join(sortedPhotos, yearDictKey) 
-				+ ' was created')
+				+ ' was created\n')
 		for monthDictKey, month in year.items():
-			
 			pathToMonth = os.path.join(sortedPhotos, 
 				yearDictKey, monthToPrint[monthDictKey])
-			
 			if not os.path.exists(pathToMonth) and len(month) != 0: 
 				os.mkdir(pathToMonth)
-				logFile.write(pathToMonth + ' was created')
+				logFile.write(pathToMonth + ' was created\n')
 			
-			# for file in month:
-			# 	if os.path.exists(os.path.join(sortedPhotos, yearDictKey, 
-			# 		monthToPrint[monthDictKey], file)):
-			# 		print('Warning: ')
-			
+			for file in month:
+				oldPathToFile = os.path.join(unsortedPhotos, file)
+				newPathToFile = os.path.join(sortedPhotos, yearDictKey, 
+					monthToPrint[monthDictKey], file)
+				if os.path.exists(newPathToFile):
+					print('Warning: ' + file + ' already exists.')
+					logFile.write('Warning: ' + file + ' already exists.\n')
+					alreadySorted.append(file)
+					alreadyExist += 1 #count skipped files
+				else:
+					shutil.copy2(oldPathToFile, newPathToFile)
+					wasCopied += 1
+					if file not in alreadySorted:
+						alreadySorted.append(file)	
+					logFile.write(oldPathToFile + ' copy to ' 
+						+ newPathToFile + '\n')
+
+	print('Copying of files is finished.')
+	logFile.write('Copying of files is finished\n')
+
+	syncDB['as'] = alreadySorted		
 			#if len(month) != 0:
 				#if not os.path.exists(os.path.join(unsortedPhotos, ))
 
