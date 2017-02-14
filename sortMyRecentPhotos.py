@@ -180,22 +180,22 @@ def checkAlreadySortedFiles(unsortedPhotos):
 	#create new list by 'list comprehension'. If item from AllUnsotredFiles 
 	#not in alreadySorted it appends in withoutAlreadySorted	
 
-	NumAlreadySorted = len(allUnsortedFiles) - len(withoutAlreadySorted)
+	numAlreadySorted = len(allUnsortedFiles) - len(withoutAlreadySorted)
 	#get number of already sorted files
 	
-	NumWithoutAlreadySorted = len(withoutAlreadySorted) - 1
+	numWithoutAlreadySorted = len(withoutAlreadySorted) - 1
 	#number of all unsorted files (-1 because of _sync folder)
 
-	if NumAlreadySorted == 0:
-		print('\nHere are ' + str(NumWithoutAlreadySorted) + 
+	if numAlreadySorted == 0:
+		print('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files in ' + unsortedPhotos)
-		logFile.write('\nHere are ' + str(NumWithoutAlreadySorted) + 
+		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files in ' + unsortedPhotos + '\n')
 	else:	
-		print('\nHere are ' + str(NumWithoutAlreadySorted) + 
-			' unsorted files but ' + str(NumAlreadySorted) + ' already sorted')
-		logFile.write('\nHere are ' + str(NumWithoutAlreadySorted) + 
-			' unsorted files but ' + str(NumAlreadySorted) + 
+		print('\nHere are ' + str(numWithoutAlreadySorted) + 
+			' unsorted files but ' + str(numAlreadySorted) + ' already sorted')
+		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
+			' unsorted files but ' + str(numAlreadySorted) + 
 			' already sorted\n')
 		interception = [x for x in allUnsortedFiles if x in alreadySorted]
 
@@ -203,7 +203,7 @@ def checkAlreadySortedFiles(unsortedPhotos):
 		for item in interception: #TODO: check if it os work
 			logFile.write(item + '\n')
 
-	return NumWithoutAlreadySorted, NumAlreadySorted, withoutAlreadySorted		
+	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted		
 
 	#### message about already sorted files ###
 
@@ -215,7 +215,7 @@ def checkAlreadySortedFiles(unsortedPhotos):
 
 ############################### sortByExtEngine  ##########################			
 
-def sortByExtEngine(NumWithoutAlreadySorted, NumAlreadySorted):
+def sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted):
 	
 
 	######sort out files by extentions######
@@ -249,7 +249,7 @@ def sortByExtEngine(NumWithoutAlreadySorted, NumAlreadySorted):
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention
 
-	return extLists, NumWithoutAlreadySorted
+	return extLists, numWithoutAlreadySorted
 
 ################################## copy PNG  ############################
 
@@ -343,18 +343,20 @@ while True:
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		#checkAlreadySortedFiles()
-		NumWithoutAlreadySorted, NumAlreadySorted, withoutAlreadySorted = checkAlreadySortedFiles(unsortedPhotos)
+		a = checkAlreadySortedFiles(unsortedPhotos)
+		numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted = a
+		#a just to devide statement by two lines
 		
 		###figuring out total size of all unsorted files###
 		logFile.write('Call sizes()\n\n') #TODO: decide where put sizes
 		logFile.write('Start to figuring out total size of unsorted files\n\n')
 		totalSize = sizes(withoutAlreadySorted)
-		logFile.write('Total size of ' + str(NumWithoutAlreadySorted) + 
+		logFile.write('Total size of ' + str(numWithoutAlreadySorted) + 
 			' files is ' + str("%0.2f" % totalSize) + ' MB\n\n')
-		print('\nTotal size of ' + str(NumWithoutAlreadySorted) + ' files is ' 
+		print('\nTotal size of ' + str(numWithoutAlreadySorted) + ' files is ' 
 			+ str("%0.2f" % totalSize) + ' MB\n')
 
-		sbeeResult = sortByExtEngine(NumWithoutAlreadySorted, NumAlreadySorted)
+		sbeeResult = sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted)
 		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
 		break
 	elif start == 'n':
