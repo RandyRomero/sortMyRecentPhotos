@@ -152,16 +152,15 @@ def checkAlreadySortedFiles(unsortedPhotos):
 		logFile.write(os.path.join(unsortedPhotos, '_sync') + ' exists.\n')
 		syncDB = shelve.open(os.path.join(unsortedPhotos, 
 								'_sync', 'filesyncDB'))
-
 		try:
 			alreadySorted = syncDB['as']
 		except KeyError:
 			print('Database doesn\'t have list of files')
 			alreadySorted = []
 			syncDB['as'] = alreadySorted
-		#extract list of file nsmes from shelve
+		#extract list of file names from shelve
 	else:
-		print(os.path.join(unsortedPhotos, '_sync') + ' doesn\'t exists')
+		logFile.write(os.path.join(unsortedPhotos, '_sync') + ' doesn\'t exist\n')
 		os.mkdir(os.path.join(unsortedPhotos, '_sync'))
 		syncDB = shelve.open(os.path.join(unsortedPhotos, 
 								'_sync', 'filesyncDB'))
@@ -193,25 +192,18 @@ def checkAlreadySortedFiles(unsortedPhotos):
 			' unsorted files in ' + unsortedPhotos + '\n')
 	else:	
 		print('\nHere are ' + str(numWithoutAlreadySorted) + 
-			' unsorted files but ' + str(numAlreadySorted) + ' already sorted')
+			' unsorted files but ' + str(numAlreadySorted) 
+			+ ' already sorted ' + unsortedPhotos + '\n')
 		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files but ' + str(numAlreadySorted) + 
-			' already sorted\n')
-		interception = [x for x in allUnsortedFiles if x in alreadySorted]
+			' already sorted ' + unsortedPhotos + '\n')
 
+		interception = [x for x in allUnsortedFiles if x in alreadySorted]
 		logFile.write('Here is list of already sorted files: \n')
-		for item in interception: #TODO: check if it os work
+		for item in interception:
 			logFile.write(item + '\n')
 
 	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted		
-
-	#### message about already sorted files ###
-
-	# if len(alreadySorted) > 0: 
-	# 	print('Warning: ' + str(len(alreadySorted)) + ' already sorted files.')
-	# 	logFile.write('Warning: ' + str(len(alreadySorted)) + 
-	# 		' already sorted files.\n')
-	# 		
 
 ############################### sortByExtEngine  ##########################			
 
@@ -348,7 +340,7 @@ while True:
 		#a just to devide statement by two lines
 		
 		###figuring out total size of all unsorted files###
-		logFile.write('Call sizes()\n\n') #TODO: decide where put sizes
+		logFile.write('Call sizes()\n\n')
 		logFile.write('Start to figuring out total size of unsorted files\n\n')
 		totalSize = sizes(withoutAlreadySorted)
 		logFile.write('Total size of ' + str(numWithoutAlreadySorted) + 
