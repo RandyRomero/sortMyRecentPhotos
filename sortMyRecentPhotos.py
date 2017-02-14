@@ -307,12 +307,31 @@ def copyEngine(filesByDate):
 	alreadyExist = 0
 	wasCopied = 0
 
+	monthToPrint = {'01': '[01] January',
+					'02': '[02] February',
+					'03': '[03] March',
+					'04': '[04] April',
+					'05': '[05] May',
+					'06': '[06] June',
+					'07': '[07] July',
+					'08': '[08] August',
+					'09': '[09] September',
+					'10': '[10] October',
+					'11': '[11] November',
+					'12': '[12] December'}	
+
 	for yearDictKey, year in filesByDate.items():
 		if not os.path.exists(os.path.join(sortedPhotos, yearDictKey)):
 			os.mkdir(os.path.join(sortedPhotos, yearDictKey))
 			logFile.write(os.path.join(sortedPhotos, yearDictKey) 
-				+ ' was ctreated')
-		#for monthDictKey, month in year.items():
+				+ ' was created')
+		for monthDictKey, month in year.items():
+			if not os.path.exists(os.path.join(sortedPhotos, 
+				yearDictKey, monthToPrint[monthDictKey])) and len(month) != 0: 
+				os.mkdir(os.path.join(sortedPhotos, yearDictKey, 
+					monthToPrint[monthDictKey]))
+				logFile.write(os.path.join(sortedPhotos, 
+					yearDictKey, monthToPrint[monthDictKey]) + ' was created')
 			#if len(month) != 0:
 				#if not os.path.exists(os.path.join(unsortedPhotos, ))
 
