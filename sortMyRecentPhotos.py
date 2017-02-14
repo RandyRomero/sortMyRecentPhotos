@@ -199,9 +199,9 @@ def checkAlreadySortedFiles(unsortedPhotos):
 			' unsorted files but ' + str(numAlreadySorted) + 
 			' already sorted ' + unsortedPhotos + '\n')
 
-		interception = [x for x in allUnsortedFiles if x in alreadySorted]
+		intercept = [x for x in allUnsortedFiles if x in alreadySorted]
 		logFile.write('Here is list of already sorted files: \n')
-		for item in interception:
+		for item in intercept:
 			logFile.write(item + '\n')
 
 	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted
@@ -262,6 +262,7 @@ def copyPng(listOfPng):
 		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)):
 			logFile.write('Error: ' + item + 
 				' already is in destination folder\n')
+			alreadySorted.append(item)
 			alreadyExist += 1 #count skipped files
 			continue
 		else:
@@ -319,6 +320,8 @@ def copyEngine(filesByDate):
 					'10': '[10] October',
 					'11': '[11] November',
 					'12': '[12] December'}	
+
+	################ copy files by year and date #################
 
 	for yearDictKey, year in filesByDate.items():
 		if not os.path.exists(os.path.join(sortedPhotos, yearDictKey)):
