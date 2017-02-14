@@ -300,8 +300,8 @@ def copyPng(listOfPng):
 #############################  copyEngine  ##############################
 
 def copyEngine(filesByDate):
-	logFile.write('\ncopyEngine started')
-	print('Copy engine doesn\'t exist yet :)')
+	logFile.write('Start copy photo and video by date...\n')
+	print('Start copy photo and video by date...')
 
 	alreadySorted = syncDB['as'] #get list of already sorted files
 	alreadyExist = 0
@@ -326,12 +326,19 @@ def copyEngine(filesByDate):
 			logFile.write(os.path.join(sortedPhotos, yearDictKey) 
 				+ ' was created')
 		for monthDictKey, month in year.items():
-			if not os.path.exists(os.path.join(sortedPhotos, 
-				yearDictKey, monthToPrint[monthDictKey])) and len(month) != 0: 
-				os.mkdir(os.path.join(sortedPhotos, yearDictKey, 
-					monthToPrint[monthDictKey]))
-				logFile.write(os.path.join(sortedPhotos, 
-					yearDictKey, monthToPrint[monthDictKey]) + ' was created')
+			
+			pathToMonth = os.path.join(sortedPhotos, 
+				yearDictKey, monthToPrint[monthDictKey])
+			
+			if not os.path.exists(pathToMonth) and len(month) != 0: 
+				os.mkdir(pathToMonth)
+				logFile.write(pathToMonth + ' was created')
+			
+			# for file in month:
+			# 	if os.path.exists(os.path.join(sortedPhotos, yearDictKey, 
+			# 		monthToPrint[monthDictKey], file)):
+			# 		print('Warning: ')
+			
 			#if len(month) != 0:
 				#if not os.path.exists(os.path.join(unsortedPhotos, ))
 
