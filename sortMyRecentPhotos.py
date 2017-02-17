@@ -346,7 +346,10 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 
 ####################### wasCopied log and print  ######################				
 
-def wasCopied():
+def wasCopiedEngine():
+
+	global wasCopied
+	global alreadyExist
 
 	if wasCopied > 0:
 		logFile.write(str(wasCopied) + ' files were copied\n')
@@ -444,6 +447,7 @@ while True:
 		if len(sbeeResult[0]['PNG']) > 0:
 			copyPng(sbeeResult[0]['PNG']) #pass pngList to copyPng
 		copyEngine(filesByDate, numWithoutAlreadySorted)
+		wasCopiedEngine()
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
