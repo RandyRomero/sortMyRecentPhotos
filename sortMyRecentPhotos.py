@@ -141,7 +141,7 @@ def sortByDate(extLists):
 			logFile.write(file + '\n')
 			#message about mismatch files
 	
-	return len(mismatchedFiles), yearDict
+	return mismatchedFiles, yearDict
 
 ######################## Check already sorted files  ####################
 
@@ -245,7 +245,7 @@ def sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted):
 
 ################################## copy PNG  ############################
 
-def copyPng(listOfPng):
+def copywhithoutDate(listOfPng):
 	logFile.write('Copy PNG files...\n')
 	print('Copy PNG files...\n')
 
@@ -430,6 +430,7 @@ while True:
 
 		sbeeResult = sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted)
 		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
+		sbeeResult[0]['Mismatched'] = mismatchedFiles
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -442,18 +443,21 @@ while True:
 
 ##################### Menu to ask user to start copying ##################
 
-logFile.write('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
+logFile.write('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
 	' files are ready to copy. Start? (y/n)\n\n')
 
 while True:
-	start = input('\n\n' + str(sbeeResult[1] - mismatchedFiles) + 
+	start = input('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
 		' files are ready to copy. Start? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
 		wasCopied = 0
 		alreadyExist = 0
-		if len(sbeeResult[0]['PNG']) > 0:
-			copyPng(sbeeResult[0]['PNG']) #pass pngList to copyPng
+		numOtherFiles = (len(sbeeResult[0]['PNG']) + 
+			len(sbeeResult[0]['other']) + len(sbeeResult[0]['Mismatched']))
+		print('Number of other files is ' + str(numOtherFiles))
+		if numOtherFiles > 0:
+			#copyWithoutDate(sbeeResult[0])
 		copyEngine(filesByDate, numWithoutAlreadySorted)
 		wasCopiedEngine()
 		break
