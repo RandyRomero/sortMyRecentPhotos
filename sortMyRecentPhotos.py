@@ -317,6 +317,7 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 				yearDictKey, monthToPrint[monthDictKey])
 			if not os.path.exists(pathToMonth) and len(month) != 0: 
 				os.mkdir(pathToMonth)
+				print('Now copy to ' + pathToMonth + '...')
 				logFile.write(pathToMonth + ' was created\n')
 			
 			for file in month:
