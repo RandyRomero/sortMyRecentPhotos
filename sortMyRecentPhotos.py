@@ -249,9 +249,10 @@ def copyPng(listOfPng):
 	logFile.write('Copy PNG files...\n')
 	print('Copy PNG files...\n')
 
+	global wasCopied
+	global alreadyExist
+
 	alreadySorted = syncDB['as'] #get list of already sorted files
-	alreadyExist = 0
-	wasCopied = 0
 	
 	if os.path.exists(os.path.join(sortedPhotos, 'PNG')):
 		print('\nWarning: folder PNG in destionation folder already exists')
@@ -278,35 +279,18 @@ def copyPng(listOfPng):
 				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
 			#log which and where to file was copied
 
-	if wasCopied > 0:
-		logFile.write(str(wasCopied) + ' PNG files were copied\n')
-		print('\n' + str(wasCopied) + ' PNG files were copied')
-		if alreadyExist == 1:
-			print('There is 1 skipped file')
-			logFile.write('\nThere is 1 skipped file')
-		elif alreadyExist > 1:
-			print(str(alreadyExist) + ' PNG files were skipped')
-			logFile.write(str(alreadyExist) + ' PNG files were skipped\n')
-		elif alreadyExist == 0:
-			print('There is no skipped file')
-			logFile.write('There are no skipped files\n')
-	else:
-		print('All files (' + str(alreadyExist) + ' from ' 
-			+ str(len(listOfPng)) + ') already exist in destination folder')
-		logFile.write('\nAll files(' + str(alreadyExist) + ' from ' + 
-			str(len(listOfPng)) + ') already exist in destination folder')
-
 	syncDB['as'] = alreadySorted	
 
 #############################  copyEngine  ##############################
 
-def copyEngine(filesByDate):
+def copyEngine(filesByDate, numWithoutAlreadySorted):
 	logFile.write('Start copy photo and video by date...\n')
 	print('Start copy photo and video by date...')
 
+	global wasCopied
+	global alreadyExist
+
 	alreadySorted = syncDB['as'] #get list of already sorted files
-	alreadyExist = 0
-	wasCopied = 0
 
 	monthToPrint = {'01': '[01] January',
 					'02': '[02] February',
@@ -355,9 +339,36 @@ def copyEngine(filesByDate):
 	print('Copying of files is finished.')
 	logFile.write('Copying of files is finished\n')
 
+
 	syncDB['as'] = alreadySorted		
 			#if len(month) != 0:
 				#if not os.path.exists(os.path.join(unsortedPhotos, ))
+
+####################### wasCopied log and print  ######################				
+
+def wasCopied():
+
+	if wasCopied > 0:
+		logFile.write(str(wasCopied) + ' files were copied\n')
+		print('\n' + str(wasCopied) + ' files were copied')
+		if alreadyExist == 1:
+			print('There is 1 skipped file')
+			logFile.write('\nThere is 1 skipped file')
+		elif alreadyExist > 1:
+			print(str(alreadyExist) + ' files were skipped')
+			logFile.write(str(alreadyExist) + ' files were skipped\n')
+		elif alreadyExist == 0:
+			print('There is no skipped file')
+			logFile.write('There are no skipped files\n')
+	else:
+		print('All files (' + str(alreadyExist) + ' from ' 
+			+ str(numWithoutAlreadySorted) + 
+			') already exist in destination folder')
+		logFile.write('\nAll files(' + str(alreadyExist) + 
+			' from ' + 
+			str(numWithoutAlreadySorted) + 
+			') already exist in destination folder')
+
 
 ########################check if folder for work exist#################
 
@@ -428,9 +439,11 @@ while True:
 		' files are ready to copy. Start? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
+		wasCopied = 0
+		alreadyExist = 0
 		if len(sbeeResult[0]['PNG']) > 0:
 			copyPng(sbeeResult[0]['PNG']) #pass pngList to copyPng
-		copyEngine(filesByDate)
+		copyEngine(filesByDate, numWithoutAlreadySorted)
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
