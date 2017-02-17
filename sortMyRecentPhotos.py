@@ -305,13 +305,14 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 					'11': '[11] November',
 					'12': '[12] December'}	
 
-	################ copy files by year and date #################
+	################ copy files by year and month #################
 
 	for yearDictKey, year in filesByDate.items():
 		if not os.path.exists(os.path.join(sortedPhotos, yearDictKey)):
 			os.mkdir(os.path.join(sortedPhotos, yearDictKey))
 			logFile.write(os.path.join(sortedPhotos, yearDictKey) 
 				+ ' was created\n')
+
 		for monthDictKey, month in year.items():
 			pathToMonth = os.path.join(sortedPhotos, 
 				yearDictKey, monthToPrint[monthDictKey])
@@ -319,6 +320,9 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 				os.mkdir(pathToMonth)
 				print('Now copy to ' + pathToMonth + '...')
 				logFile.write(pathToMonth + ' was created\n')
+			elif os.path.exists(pathToMonth) and len(month) != 0:
+				print('Now copy to ' + pathToMonth + '...')	
+				logFile.write('Now copy to ' + pathToMonth + '...')	
 			
 			for file in month:
 				oldPathToFile = os.path.join(unsortedPhotos, file)
