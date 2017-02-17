@@ -133,9 +133,10 @@ def sortByDate(extLists):
 
 	if len(mismatchedFiles) > 0:
 		logFile.write('\n\nHere are ' + str(len(mismatchedFiles)) + 
-			' mismatched files. They won\'t be copied anywhere:\n')
+			' mismatched files:\n')
 		print('\nThere are ' + str(len(mismatchedFiles)) + 
-			' mismatched files. They won\'t be copied anywhere:')
+			' mismatched files.\n' + 
+			'They will be copied in folder named "Mismatched".')
 		for file in mismatchedFiles:
 			logFile.write(file + '\n')
 			#message about mismatch files
@@ -430,7 +431,7 @@ while True:
 
 		sbeeResult = sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted)
 		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
-		sbeeResult[0]['Mismatched'] = mismatchedFiles
+		sbeeResult[0]['mismatched'] = mismatchedFiles
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -455,7 +456,7 @@ while True:
 		alreadyExist = 0
 
 		numOtherFiles = (len(sbeeResult[0]['PNG']) + 
-			len(sbeeResult[0]['other']) + len(sbeeResult[0]['Mismatched']))
+			len(sbeeResult[0]['other']) + len(sbeeResult[0]['mismatched']))
 		print('Number of other files is ' + str(numOtherFiles))
 		if numOtherFiles > 0:
 			for k,v in sbeeResult[0].items():
