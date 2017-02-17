@@ -480,6 +480,7 @@ while True:
 		continue
 
 syncDB.close()
+syncDB = None #workaround for some python bug with closing shelve
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
 
