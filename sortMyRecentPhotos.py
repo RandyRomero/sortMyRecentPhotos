@@ -134,10 +134,9 @@ def sortByDate(extLists):
 	if len(mismatchedFiles) > 0:
 		logFile.write('\n\nHere are ' + str(len(mismatchedFiles)) + 
 			' mismatched files. They won\'t be copied anywhere:\n')
-		print('\nHere are ' + str(len(mismatchedFiles)) + 
+		print('\nThere are ' + str(len(mismatchedFiles)) + 
 			' mismatched files. They won\'t be copied anywhere:')
 		for file in mismatchedFiles:
-			print(file)
 			logFile.write(file + '\n')
 			#message about mismatch files
 	
