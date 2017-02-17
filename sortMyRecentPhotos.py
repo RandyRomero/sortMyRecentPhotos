@@ -245,30 +245,31 @@ def sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted):
 
 ################################## copy PNG  ############################
 
-def copywhithoutDate(listOfPng):
-	logFile.write('Copy PNG files...\n')
-	print('Copy PNG files...\n')
-
+def copyWithoutDate(name, files):
 	global wasCopied
 	global alreadyExist
 
+	logFile.write('Copy ' + name + ' files...\n')
+	print('Copy ' + name + ' files...\n')
+	
 	alreadySorted = syncDB['as'] #get list of already sorted files
 	
-	if os.path.exists(os.path.join(sortedPhotos, 'PNG')):
-		print('\nWarning: folder PNG in destionation folder already exists')
+	if os.path.exists(os.path.join(sortedPhotos, name)):
+		print('\nWarning: folder ' + name + 
+			' in destionation folder already exists')
 	else:	
-		os.mkdir(os.path.join(sortedPhotos, 'PNG'))
+		os.mkdir(os.path.join(sortedPhotos, name))
 	i = 0	
-	for item in listOfPng:
-		if os.path.exists(os.path.join(sortedPhotos, 'PNG', item)):
+	for item in files:
+		if os.path.exists(os.path.join(sortedPhotos, name, item)):
 			logFile.write('Error: ' + item + 
-				' already is in destination folder\n')
+				' already is in ' + name + '\n')
 			alreadySorted.append(item)
 			alreadyExist += 1 #count skipped files
 			continue
 		else:
 			shutil.copy2(os.path.join(unsortedPhotos, item), 
-				os.path.join(sortedPhotos, 'PNG', item)) #copy file
+				os.path.join(sortedPhotos, name, item)) #copy file
 			wasCopied += 1
 			if item not in alreadySorted:
 				alreadySorted.append(item)
@@ -276,7 +277,7 @@ def copywhithoutDate(listOfPng):
 			# 	print(str(i) + '. ' + item + ' in sorted db.')
 			# 	i += 1 	
 			logFile.write(os.path.join(unsortedPhotos, item) + 
-				' copy to ' + os.path.join(sortedPhotos, 'PNG', item) + '\n')
+				' copy to ' + os.path.join(sortedPhotos, name, item) + '\n')
 			#log which and where to file was copied
 
 	syncDB['as'] = alreadySorted	
@@ -453,11 +454,19 @@ while True:
 		logFile.write('Got "y". Call copyEngine()\n\n')
 		wasCopied = 0
 		alreadyExist = 0
+
 		numOtherFiles = (len(sbeeResult[0]['PNG']) + 
 			len(sbeeResult[0]['other']) + len(sbeeResult[0]['Mismatched']))
 		print('Number of other files is ' + str(numOtherFiles))
 		if numOtherFiles > 0:
-			#copyWithoutDate(sbeeResult[0])
+			for k,v in sbeeResult[0].items():
+				if k == 'JPG' or k == 'video':
+					continue
+				else:
+					print('copywithoutDate was invoked')
+					logFile.write('copywithoutDate was invoked\n')
+					copyWithoutDate(k,v)
+
 		copyEngine(filesByDate, numWithoutAlreadySorted)
 		wasCopiedEngine()
 		break
