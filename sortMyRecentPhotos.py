@@ -178,7 +178,7 @@ def checkAlreadySortedFiles(unsortedPhotos):
 	withoutAlreadySorted = [x for x in allUnsortedFiles 
 							if x not in alreadySorted]
 	#create new list by 'list comprehension'. If item from AllUnsotredFiles 
-	#not in alreadySorted it appends in withoutAlreadySorted	
+	#not in alreadySorted it appends to withoutAlreadySorted	
 
 	numAlreadySorted = len(allUnsortedFiles) - len(withoutAlreadySorted)
 	#get number of already sorted files
@@ -250,13 +250,15 @@ def copyWithoutDate(name, files):
 	global alreadyExist
 
 	logFile.write('Copy ' + name + ' files...\n')
-	print('Copy ' + name + ' files...\n')
+	print('Copy ' + name + ' files...')
 	
 	alreadySorted = syncDB['as'] #get list of already sorted files
 	
 	if os.path.exists(os.path.join(sortedPhotos, name)):
-		print('\nWarning: folder ' + name + 
-			' in destionation folder already exists')
+		print('Warning: folder "' + name + 
+			'"" in destionation folder already exists')
+		logFile.write('Warning: folder "' + name + 
+			'"" in destionation folder already exists')
 	else:	
 		os.mkdir(os.path.join(sortedPhotos, name))
 	i = 0	
@@ -273,9 +275,6 @@ def copyWithoutDate(name, files):
 			wasCopied += 1
 			if item not in alreadySorted:
 				alreadySorted.append(item)
-			# elif item in alreadySorted:
-			# 	print(str(i) + '. ' + item + ' in sorted db.')
-			# 	i += 1 	
 			logFile.write(os.path.join(unsortedPhotos, item) + 
 				' copy to ' + os.path.join(sortedPhotos, name, item) + '\n')
 			#log which and where to file was copied
