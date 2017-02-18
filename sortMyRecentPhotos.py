@@ -451,15 +451,18 @@ while True:
 		' files are ready to copy. Start? (y/n)\nYour answer is: ')
 	if start == 'y':
 		logFile.write('Got "y". Call copyEngine()\n\n')
-		wasCopied = 0
+		wasCopied = 0 #global variables to count files in different functions
 		alreadyExist = 0
 
+		#### part for copying files regardless of date ####
 		numOtherFiles = (len(sbeeResult[0]['PNG']) + 
 			len(sbeeResult[0]['other']) + len(sbeeResult[0]['mismatched']))
 		print('Number of other files is ' + str(numOtherFiles))
+
+		#call copyWithoutDateEngine for specific file lists if them isn't empty
 		if numOtherFiles > 0:
 			for k,v in sbeeResult[0].items():
-				if k == 'JPG' or k == 'video':
+				if k == 'JPG' or k == 'video' or len(v) < 1:
 					continue
 				else:
 					logFile.write('copywithoutDate was invoked\n')
