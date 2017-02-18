@@ -20,7 +20,10 @@ def printLogFilesByExt(ilk, listFiles):
 		str(len(listFiles)))	
 	print('Total amount of ' + ilk + ' files is ' 
 		+ str(len(listFiles)))
-	print('Total size of ' + ilk + ' files is ' + #where is log of total size?
+	print('Total size of ' + ilk + ' files is ' + 
+		str('%0.2f' % sizes(listFiles)) + ' MB\n')
+	logFile.write('\nTotal size of ' + 
+		ilk + ' files is ' + 
 		str('%0.2f' % sizes(listFiles)) + ' MB\n')
 	logFile.write('\nList of ' + ilk + ' files:\n')	
 	if len(listFiles) < 1:
@@ -38,7 +41,7 @@ def sortByDate(extLists):
 	#to list
 
 	yearList = []
-	logFile.write('Compile regex for dates in files...\n\n')
+	logFile.write('\nCompile regex for dates in files...\n')
 	dateRegex = re.compile(r''' 
 		^((?:201[0-9]))- 		#year - Group 1
 		((?:0|1)(?:\d))-		#month - Group 2
@@ -167,7 +170,7 @@ def checkAlreadySortedFiles(unsortedPhotos):
 								'_sync', 'filesyncDB'))
 		alreadySorted = []
 		syncDB['as'] = alreadySorted
-		logFile.write('List of files has been already in the DB') 
+		logFile.write('List of files has been already in the DB\n') 
 
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
 		'\n\n')
@@ -194,10 +197,10 @@ def checkAlreadySortedFiles(unsortedPhotos):
 	else:	
 		print('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files but ' + str(numAlreadySorted) 
-			+ ' already sorted ' + unsortedPhotos + '\n')
+			+ ' already sorted in' + unsortedPhotos + '\n')
 		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files but ' + str(numAlreadySorted) + 
-			' already sorted ' + unsortedPhotos + '\n')
+			' already sorted in' + unsortedPhotos + '\n')
 
 		intercept = [x for x in allUnsortedFiles if x in alreadySorted]
 		logFile.write('Here is list of already sorted files: \n')
@@ -249,8 +252,8 @@ def copyWithoutDate(name, files):
 	global wasCopied
 	global alreadyExist
 
-	logFile.write('Copy ' + name + ' files...\n')
-	print('Copy ' + name + ' files...')
+	logFile.write('Copy ' + name + ' files...\n\n')
+	print('Copy ' + name + ' files...\n')
 	
 	alreadySorted = syncDB['as'] #get list of already sorted files
 	
@@ -284,7 +287,7 @@ def copyWithoutDate(name, files):
 #############################  copyEngine  ##############################
 
 def copyEngine(filesByDate, numWithoutAlreadySorted):
-	logFile.write('Start copy photo and video by date...\n')
+	logFile.write('\nStart to copy photo and video by date...\n')
 	print('Start copy photo and video by date...')
 
 	global wasCopied
@@ -344,13 +347,10 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 					logFile.write(oldPathToFile + ' copy to ' 
 						+ newPathToFile + '\n')
 
-	print('Copying of files is finished.')
-	logFile.write('\nCopying of files is finished\n')
-
+	print('\nCopying of files is finished!!')
+	logFile.write('\nCopying of files is finished!!\n')
 
 	syncDB['as'] = alreadySorted		
-			#if len(month) != 0:
-				#if not os.path.exists(os.path.join(unsortedPhotos, ))
 
 ####################### wasCopied log and print  ######################				
 
@@ -443,21 +443,24 @@ while True:
 
 ##################### Menu to ask user to start copying ##################
 
-logFile.write('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
-	' files are ready to copy. Start? (y/n)\n\n')
-
 while True:
-	start = input('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
-		' files are ready to copy. Start? (y/n)\nYour answer is: ')
+	print('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
+		' files are ready to copy.')
+	logFile.write('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
+		' files are ready to copy.')
+	print('Destination is: ' + sortedPhotos)
+	logFile.write('\nDestination is: ' + sortedPhotos)
+
+	start = input('Start? (y/n)\nYour answer is: ')
+	logFile.write('Start? (y/n)\nYour answer is: ')
 	if start == 'y':
-		logFile.write('Got "y". Call copyEngine()\n\n')
+		logFile.write('Got "y".\n\n')
 		wasCopied = 0 #global variables to count files in different functions
 		alreadyExist = 0
 
 		#### part for copying files regardless of date ####
 		numOtherFiles = (len(sbeeResult[0]['PNG']) + 
 			len(sbeeResult[0]['other']) + len(sbeeResult[0]['mismatched']))
-		print('Number of other files is ' + str(numOtherFiles))
 
 		#call copyWithoutDateEngine for specific file lists if them isn't empty
 		if numOtherFiles > 0:
@@ -465,7 +468,7 @@ while True:
 				if k == 'JPG' or k == 'video' or len(v) < 1:
 					continue
 				else:
-					logFile.write('copywithoutDate was invoked\n')
+					logFile.write('\ncopyWithoutDate was invoked\n')
 					copyWithoutDate(k,v)
 
 		copyEngine(filesByDate, numWithoutAlreadySorted)
