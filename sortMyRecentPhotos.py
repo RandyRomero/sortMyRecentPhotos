@@ -38,7 +38,6 @@ def sortByDate(extLists):
 	#to list
 
 	yearList = []
-
 	logFile.write('Compile regex for dates in files...\n\n')
 	dateRegex = re.compile(r''' 
 		^((?:201[0-9]))- 		#year - Group 1
@@ -118,6 +117,7 @@ def sortByDate(extLists):
 					'12': 'December'}	
 
 	print('\nSorted out by date:')
+	#print out and log list of photos and videos by month and year
 	for yearDictKey, yearDictValue in yearDict.items():
 		for monthDictKey, monthDictValue in yearDictValue.items():
 			if len(monthDictValue) != 0:
@@ -129,7 +129,7 @@ def sortByDate(extLists):
 				+ yearDictKey + ': \n')
 			for file in monthDictValue:
 				logFile.write(file + '\n')
-			#log list of photo by month and year
+			
 
 	if len(mismatchedFiles) > 0:
 		logFile.write('\n\nHere are ' + str(len(mismatchedFiles)) + 
@@ -324,7 +324,7 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 				logFile.write(pathToMonth + ' was created\n')
 			elif os.path.exists(pathToMonth) and len(month) != 0:
 				print('Now copy to ' + pathToMonth + '...')	
-				logFile.write('Now copy to ' + pathToMonth + '...')	
+				logFile.write('Now copy to ' + pathToMonth + '...\n')	
 			
 			#### copy files by year and month ####
 			for file in month:
@@ -345,7 +345,7 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 						+ newPathToFile + '\n')
 
 	print('Copying of files is finished.')
-	logFile.write('Copying of files is finished\n')
+	logFile.write('\nCopying of files is finished\n')
 
 
 	syncDB['as'] = alreadySorted		
