@@ -167,7 +167,7 @@ def checkAlreadySortedFiles(unsortedPhotos):
 								'_sync', 'filesyncDB'))
 		alreadySorted = []
 		syncDB['as'] = alreadySorted
-		print('List of files has been already in the DB') 
+		logFile.write('List of files has been already in the DB') 
 
 	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
 		'\n\n')
@@ -370,7 +370,7 @@ def wasCopiedEngine():
 			print(str(alreadyExist) + ' files were skipped')
 			logFile.write(str(alreadyExist) + ' files were skipped\n')
 		elif alreadyExist == 0:
-			print('There is no skipped file')
+			print('There are no skipped files')
 			logFile.write('There are no skipped files\n')
 	else:
 		print('All files (' + str(alreadyExist) + ' from ' 
@@ -463,7 +463,6 @@ while True:
 				if k == 'JPG' or k == 'video':
 					continue
 				else:
-					print('copywithoutDate was invoked')
 					logFile.write('copywithoutDate was invoked\n')
 					copyWithoutDate(k,v)
 
