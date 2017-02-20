@@ -129,7 +129,7 @@ def sortByExtEngine(withoutAlreadySorted):
 		 printLogFilesByExt(k,v)
 	#prints and logs to file list and amount of files by their extention
 
-	return extLists, numWithoutAlreadySorted
+	return extLists
 
 ############################# Sort by Date ##############################
 
@@ -285,7 +285,7 @@ def copyWithoutDate(name, files):
 
 #############################  copyEngine  ##############################
 
-def copyEngine(filesByDate, numWithoutAlreadySorted):
+def copyEngine(filesByDate):
 	logFile.write('\nStart to copy photo and video by date...\n')
 	print('Start copy photo and video by date...')
 
@@ -412,9 +412,7 @@ while True:
 	if start == 'y':
 		logFile.write('Got "y". Call sortByExtEngine()\n\n')
 		#checkAlreadySortedFiles()
-		a = checkAlreadySortedFiles(unsortedPhotos)
-		numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted = a
-		#'a' just to devide statement by two lines
+		numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted = checkAlreadySortedFiles(unsortedPhotos)
 		
 		###figuring out total size of all unsorted files###
 		logFile.write('Call sizes()\n\n')
@@ -425,9 +423,10 @@ while True:
 		print('\nTotal size of ' + str(numWithoutAlreadySorted) + ' files is ' 
 			+ str("%0.2f" % totalSize) + ' MB\n')
 
-		sbeeResult = sortByExtEngine(withoutAlreadySorted)
-		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
-		sbeeResult[0]['mismatched'] = mismatchedFiles
+		listByExtentions = sortByExtEngine(withoutAlreadySorted)
+
+		mismatchedFiles, filesByDate = sortByDate(listByExtentions)
+		listByExtentions['mismatched'] = mismatchedFiles
 		break
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
@@ -440,10 +439,10 @@ while True:
 
 ##################### Menu to ask user to start copying ##################
 
-if sbeeResult[1] > 0: #if there is anything to copy 
+if numWithoutAlreadySorted > 0: #if there is anything to copy 
 	while True:
-		print('\n\n' + str(sbeeResult[1]) + ' files are ready to copy.')
-		logFile.write('\n\n' + str(sbeeResult[1]) + 
+		print('\n\n' + str(numWithoutAlreadySorted) + ' files are ready to copy.')
+		logFile.write('\n\n' + str(numWithoutAlreadySorted) + 
 			' files are ready to copy.')
 		print('Destination is: ' + sortedPhotos)
 		logFile.write('\nDestination is: ' + sortedPhotos)
@@ -456,19 +455,19 @@ if sbeeResult[1] > 0: #if there is anything to copy
 			alreadyExist = 0
 
 			#### part for copying files regardless of date ####
-			numOtherFiles = (len(sbeeResult[0]['PNG']) + 
-				len(sbeeResult[0]['other']) + len(sbeeResult[0]['mismatched']))
+			numOtherFiles = (len(listByExtentions['PNG']) + 
+				len(listByExtentions['other']) + len(listByExtentions['mismatched']))
 
 			#call copyWithoutDateEngine for specific file lists if them isn't empty
 			if numOtherFiles > 0:
-				for k,v in sbeeResult[0].items():
+				for k,v in listByExtentions.items():
 					if k == 'JPG' or k == 'video' or len(v) < 1:
 						continue
 					else:
 						logFile.write('\ncopyWithoutDate was invoked\n')
 						copyWithoutDate(k,v)
 
-			copyEngine(filesByDate, numWithoutAlreadySorted)
+			copyEngine(filesByDate)
 			wasCopiedEngine()
 			break
 		elif start == 'n':
@@ -480,7 +479,8 @@ if sbeeResult[1] > 0: #if there is anything to copy
 			print('Input error. You should type in y or n.')	
 		continue
 else:
-	print('There are no files to copy. Bye')		
+	print('There are no files to copy. Bye.')		
+	logFile.write('There are no files to copy. Bye.')		
 
 syncDB.close()
 syncDB = None #workaround for some python bug with closing shelve
