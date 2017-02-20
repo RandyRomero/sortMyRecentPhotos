@@ -32,6 +32,106 @@ def printLogFilesByExt(ilk, listFiles):
 		for file in listFiles:
 			logFile.write(file + '\n')
 
+######################## Check already sorted files  ####################
+
+def checkAlreadySortedFiles(unsortedPhotos):
+	global syncDB
+
+	if os.path.exists(os.path.join(unsortedPhotos, '_sync')):
+		logFile.write(os.path.join(unsortedPhotos, '_sync') + ' exists.\n')
+		syncDB = shelve.open(os.path.join(unsortedPhotos, 
+								'_sync', 'filesyncDB'))
+		try:
+			alreadySorted = syncDB['as']
+		except KeyError:
+			print('Database doesn\'t have list of files')
+			alreadySorted = []
+			syncDB['as'] = alreadySorted
+		#extract list of file names from shelve
+	else:
+		logFile.write(os.path.join(unsortedPhotos, '_sync') + 
+			' doesn\'t exist\n')
+		os.mkdir(os.path.join(unsortedPhotos, '_sync'))
+		syncDB = shelve.open(os.path.join(unsortedPhotos, 
+								'_sync', 'filesyncDB'))
+		alreadySorted = []
+		syncDB['as'] = alreadySorted
+		logFile.write('List of files has been already in the DB\n') 
+
+	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
+		'\n\n')
+
+	alreadySorted = syncDB['as']
+	allUnsortedFiles = os.listdir(unsortedPhotos)
+
+	withoutAlreadySorted = [x for x in allUnsortedFiles 
+							if x not in alreadySorted]
+	#create new list by 'list comprehension'. If item from allUnsotredFiles 
+	#not in alreadySorted it appends to withoutAlreadySorted	
+
+	numAlreadySorted = len(allUnsortedFiles) - len(withoutAlreadySorted)
+	#get number of already sorted files
+	
+	numWithoutAlreadySorted = len(withoutAlreadySorted) - 1
+	#number of all unsorted files (-1 because of _sync folder)
+
+	if numAlreadySorted == 0:
+		print('\nHere are ' + str(numWithoutAlreadySorted) + 
+			' unsorted files in ' + unsortedPhotos)
+		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
+			' unsorted files in ' + unsortedPhotos + '\n')
+	else:	
+		print('\nHere are ' + str(numWithoutAlreadySorted) + 
+			' unsorted files but ' + str(numAlreadySorted) 
+			+ ' already sorted in' + unsortedPhotos + '\n')
+		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
+			' unsorted files but ' + str(numAlreadySorted) + 
+			' already sorted in' + unsortedPhotos + '\n')
+
+		intercept = [x for x in allUnsortedFiles if x in alreadySorted]
+		logFile.write('Here is list of already sorted files: \n')
+		for item in intercept:
+			logFile.write(item + '\n')
+
+	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted
+
+############################### sortByExtEngine  ##########################	
+
+def sortByExtEngine(withoutAlreadySorted):
+	
+	######sort out files by extentions######
+	
+	jpgList, pngList, videoList, otherList = ([] for i in range(4))
+	#the way to declare multiple lists
+
+
+	logFile.write('Start to sort files by extension...\n\n')
+	for item in withoutAlreadySorted:
+		if item.endswith('.PNG') or item.endswith('.png'):
+			pngList.append(item)
+		elif (item.endswith('.JPG') or item.endswith('.jpg') 
+			or item.endswith('.JPEG')):
+			jpgList.append(item)
+		elif item.endswith('.MP4') or item.endswith('.3GP'):
+			videoList.append(item)
+		elif item == '_sync': #skip folder with database
+			continue
+		else:
+			otherList.append(item)
+
+	extLists = collections.OrderedDict([('JPG', jpgList), 
+										('PNG', pngList), 
+										('video', videoList), 
+										('other', otherList)])
+	#use OrderedDict to preserve insertion order. Python 3.6 default dict can
+	#do it from box but I want to keep compatibility with older versions
+
+	for k,v in extLists.items():
+		 printLogFilesByExt(k,v)
+	#prints and logs to file list and amount of files by their extention
+
+	return extLists, numWithoutAlreadySorted
+
 ############################# Sort by Date ##############################
 
 def sortByDate(extLists):
@@ -144,109 +244,9 @@ def sortByDate(extLists):
 			logFile.write(file + '\n')
 			#message about mismatch files
 	
-	return mismatchedFiles, yearDict
+	return mismatchedFiles, yearDict	
 
-######################## Check already sorted files  ####################
-
-def checkAlreadySortedFiles(unsortedPhotos):
-	global syncDB
-
-	if os.path.exists(os.path.join(unsortedPhotos, '_sync')):
-		logFile.write(os.path.join(unsortedPhotos, '_sync') + ' exists.\n')
-		syncDB = shelve.open(os.path.join(unsortedPhotos, 
-								'_sync', 'filesyncDB'))
-		try:
-			alreadySorted = syncDB['as']
-		except KeyError:
-			print('Database doesn\'t have list of files')
-			alreadySorted = []
-			syncDB['as'] = alreadySorted
-		#extract list of file names from shelve
-	else:
-		logFile.write(os.path.join(unsortedPhotos, '_sync') + 
-			' doesn\'t exist\n')
-		os.mkdir(os.path.join(unsortedPhotos, '_sync'))
-		syncDB = shelve.open(os.path.join(unsortedPhotos, 
-								'_sync', 'filesyncDB'))
-		alreadySorted = []
-		syncDB['as'] = alreadySorted
-		logFile.write('List of files has been already in the DB\n') 
-
-	logFile.write('Getting list with names of files in ' + unsortedPhotos + 
-		'\n\n')
-
-	alreadySorted = syncDB['as']
-	allUnsortedFiles = os.listdir(unsortedPhotos)
-
-	withoutAlreadySorted = [x for x in allUnsortedFiles 
-							if x not in alreadySorted]
-	#create new list by 'list comprehension'. If item from AllUnsotredFiles 
-	#not in alreadySorted it appends to withoutAlreadySorted	
-
-	numAlreadySorted = len(allUnsortedFiles) - len(withoutAlreadySorted)
-	#get number of already sorted files
-	
-	numWithoutAlreadySorted = len(withoutAlreadySorted) - 1
-	#number of all unsorted files (-1 because of _sync folder)
-
-	if numAlreadySorted == 0:
-		print('\nHere are ' + str(numWithoutAlreadySorted) + 
-			' unsorted files in ' + unsortedPhotos)
-		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
-			' unsorted files in ' + unsortedPhotos + '\n')
-	else:	
-		print('\nHere are ' + str(numWithoutAlreadySorted) + 
-			' unsorted files but ' + str(numAlreadySorted) 
-			+ ' already sorted in' + unsortedPhotos + '\n')
-		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
-			' unsorted files but ' + str(numAlreadySorted) + 
-			' already sorted in' + unsortedPhotos + '\n')
-
-		intercept = [x for x in allUnsortedFiles if x in alreadySorted]
-		logFile.write('Here is list of already sorted files: \n')
-		for item in intercept:
-			logFile.write(item + '\n')
-
-	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted
-
-############################### sortByExtEngine  ##########################			
-
-def sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted):
-	
-	######sort out files by extentions######
-	
-	jpgList, pngList, videoList, otherList = ([] for i in range(4))
-	#the way to declare multiple lists
-
-
-	logFile.write('Start to sort files by extension...\n\n')
-	for item in withoutAlreadySorted:
-		if item.endswith('.PNG') or item.endswith('.png'):
-			pngList.append(item)
-		elif (item.endswith('.JPG') or item.endswith('.jpg') 
-			or item.endswith('.JPEG')):
-			jpgList.append(item)
-		elif item.endswith('.MP4') or item.endswith('.3GP'):
-			videoList.append(item)
-		elif item == '_sync': #skip folder with database
-			continue
-		else:
-			otherList.append(item)
-
-	extLists = collections.OrderedDict([('JPG', jpgList), 
-										('PNG', pngList), 
-										('video', videoList), 
-										('other', otherList)])
-	#use OrderedDict to preserve insertion order. Python 3.6 default dict can
-	#do it from box but I want to keep compatibility with older versions
-
-	for k,v in extLists.items():
-		 printLogFilesByExt(k,v)
-	#prints and logs to file list and amount of files by their extention
-
-	return extLists, numWithoutAlreadySorted
-
-################################## copy PNG  ############################
+###########################copy fils regardless of date ##################
 
 def copyWithoutDate(name, files):
 	global wasCopied
@@ -353,7 +353,6 @@ def copyEngine(filesByDate, numWithoutAlreadySorted):
 	syncDB['as'] = alreadySorted		
 
 ####################### wasCopied log and print  ######################				
-
 def wasCopiedEngine():
 
 	global wasCopied
@@ -428,7 +427,7 @@ while True:
 		print('\nTotal size of ' + str(numWithoutAlreadySorted) + ' files is ' 
 			+ str("%0.2f" % totalSize) + ' MB\n')
 
-		sbeeResult = sortByExtEngine(numWithoutAlreadySorted, numAlreadySorted)
+		sbeeResult = sortByExtEngine(withoutAlreadySorted)
 		mismatchedFiles, filesByDate = sortByDate(sbeeResult[0])
 		sbeeResult[0]['mismatched'] = mismatchedFiles
 		break
