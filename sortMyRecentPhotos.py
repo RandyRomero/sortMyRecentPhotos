@@ -86,11 +86,12 @@ def checkAlreadySortedFiles(unsortedPhotos):
 			+ ' already sorted in' + unsortedPhotos + '\n')
 		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files but ' + str(numAlreadySorted) + 
-			' already sorted in' + unsortedPhotos + '\n')
+			' already sorted in ' + unsortedPhotos + '\n')
 
 		intercept = [x for x in allUnsortedFiles if x in alreadySorted]
+
 		logFile.write('Here is list of already sorted files: \n')
-		for item in intercept:
+		for item in intercept: #TODO change name of varibale to more meaningfull
 			logFile.write(item + '\n')
 
 	return numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted
@@ -241,7 +242,7 @@ def sortByDate(extLists):
 			'They will be copied in folder named "Mismatched".')
 		for file in mismatchedFiles:
 			logFile.write(file + '\n')
-			#message about mismatch files
+			#message about mismatched files
 	
 	return mismatchedFiles, yearDict	
 
@@ -414,20 +415,22 @@ while True:
 		#checkAlreadySortedFiles()
 		numWithoutAlreadySorted, numAlreadySorted, withoutAlreadySorted = checkAlreadySortedFiles(unsortedPhotos)
 		
-		###figuring out total size of all unsorted files###
-		logFile.write('Call sizes()\n\n')
-		logFile.write('Start to figuring out total size of unsorted files\n\n')
-		totalSize = sizes(withoutAlreadySorted)
-		logFile.write('Total size of ' + str(numWithoutAlreadySorted) + 
+		if numWithoutAlreadySorted > 0:
+			###figuring out total size of all unsorted files###
+			logFile.write('Call sizes()\n\n')
+			logFile.write('Start to figuring out total size of unsorted files\n\n')
+			totalSize = sizes(withoutAlreadySorted)
+			logFile.write('Total size of ' + str(numWithoutAlreadySorted) + 
 			' files is ' + str("%0.2f" % totalSize) + ' MB\n\n')
-		print('\nTotal size of ' + str(numWithoutAlreadySorted) + ' files is ' 
+			print('\nTotal size of ' + str(numWithoutAlreadySorted) + ' files is ' 
 			+ str("%0.2f" % totalSize) + ' MB\n')
-
-		listByExtentions = sortByExtEngine(withoutAlreadySorted)
-
-		mismatchedFiles, filesByDate = sortByDate(listByExtentions)
-		listByExtentions['mismatched'] = mismatchedFiles
-		break
+			listByExtentions = sortByExtEngine(withoutAlreadySorted)
+			mismatchedFiles, filesByDate = sortByDate(listByExtentions)
+			listByExtentions['mismatched'] = mismatchedFiles
+			break
+		else:
+			print('There is nothing to sort out.')
+			break 	
 	elif start == 'n':
 		logFile.write('Got "n". Exit script.\n\n')
 		print('Goodbye')
