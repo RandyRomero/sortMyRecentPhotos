@@ -123,8 +123,7 @@ def sortByExtEngine(withoutAlreadySorted):
 										('PNG', pngList), 
 										('video', videoList), 
 										('other', otherList)])
-	#use OrderedDict to preserve insertion order. Python 3.6 default dict can
-	#do it from box but I want to keep compatibility with older versions
+	#use OrderedDict to preserve insertion order. Python 3.6 default dict can do it from box but I want to keep compatibility with older versions
 
 	for k,v in extLists.items():
 		 printLogFilesByExt(k,v)
@@ -379,7 +378,6 @@ def wasCopiedEngine():
 			str(numWithoutAlreadySorted) + 
 			') already exist in destination folder')
 
-
 ########################check if folder for work exist#################
 
 if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
@@ -442,44 +440,47 @@ while True:
 
 ##################### Menu to ask user to start copying ##################
 
-while True:
-	print('\n\n' + str(sbeeResult[1]) + ' files are ready to copy.')
-	logFile.write('\n\n' + str(sbeeResult[1]) + 
-		' files are ready to copy.')
-	print('Destination is: ' + sortedPhotos)
-	logFile.write('\nDestination is: ' + sortedPhotos)
+if sbeeResult[1] > 0: #if there is anything to copy 
+	while True:
+		print('\n\n' + str(sbeeResult[1]) + ' files are ready to copy.')
+		logFile.write('\n\n' + str(sbeeResult[1]) + 
+			' files are ready to copy.')
+		print('Destination is: ' + sortedPhotos)
+		logFile.write('\nDestination is: ' + sortedPhotos)
 
-	start = input('Start? (y/n)\nYour answer is: ')
-	logFile.write('Start? (y/n)\nYour answer is: ')
-	if start == 'y':
-		logFile.write('Got "y".\n\n')
-		wasCopied = 0 #global variables to count files in different functions
-		alreadyExist = 0
+		start = input('Start? (y/n)\nYour answer is: ')
+		logFile.write('Start? (y/n)\nYour answer is: ')
+		if start == 'y':
+			logFile.write('Got "y".\n\n')
+			wasCopied = 0 #global variables to count files in different functions
+			alreadyExist = 0
 
-		#### part for copying files regardless of date ####
-		numOtherFiles = (len(sbeeResult[0]['PNG']) + 
-			len(sbeeResult[0]['other']) + len(sbeeResult[0]['mismatched']))
+			#### part for copying files regardless of date ####
+			numOtherFiles = (len(sbeeResult[0]['PNG']) + 
+				len(sbeeResult[0]['other']) + len(sbeeResult[0]['mismatched']))
 
-		#call copyWithoutDateEngine for specific file lists if them isn't empty
-		if numOtherFiles > 0:
-			for k,v in sbeeResult[0].items():
-				if k == 'JPG' or k == 'video' or len(v) < 1:
-					continue
-				else:
-					logFile.write('\ncopyWithoutDate was invoked\n')
-					copyWithoutDate(k,v)
+			#call copyWithoutDateEngine for specific file lists if them isn't empty
+			if numOtherFiles > 0:
+				for k,v in sbeeResult[0].items():
+					if k == 'JPG' or k == 'video' or len(v) < 1:
+						continue
+					else:
+						logFile.write('\ncopyWithoutDate was invoked\n')
+						copyWithoutDate(k,v)
 
-		copyEngine(filesByDate, numWithoutAlreadySorted)
-		wasCopiedEngine()
-		break
-	elif start == 'n':
-		logFile.write('Got "n". Exit script.\n\n')
-		print('Goodbye')
-		sys.exit()
-	else:
-		logFile.write('Got wrong input. Ask again...\n\n')
-		print('Input error. You should type in y or n.')	
+			copyEngine(filesByDate, numWithoutAlreadySorted)
+			wasCopiedEngine()
+			break
+		elif start == 'n':
+			logFile.write('Got "n". Exit script.\n\n')
+			print('Goodbye')
+			sys.exit()
+		else:
+			logFile.write('Got wrong input. Ask again...\n\n')
+			print('Input error. You should type in y or n.')	
 		continue
+else:
+	print('There are no files to copy. Bye')		
 
 syncDB.close()
 syncDB = None #workaround for some python bug with closing shelve
