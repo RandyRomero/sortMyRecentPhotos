@@ -444,9 +444,8 @@ while True:
 ##################### Menu to ask user to start copying ##################
 
 while True:
-	print('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
-		' files are ready to copy.')
-	logFile.write('\n\n' + str(sbeeResult[1] - len(mismatchedFiles)) + 
+	print('\n\n' + str(sbeeResult[1]) + ' files are ready to copy.')
+	logFile.write('\n\n' + str(sbeeResult[1]) + 
 		' files are ready to copy.')
 	print('Destination is: ' + sortedPhotos)
 	logFile.write('\nDestination is: ' + sortedPhotos)
