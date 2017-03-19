@@ -2,6 +2,9 @@
 
 import copy, os, shelve, shutil, sys, collections, re
 
+def prlog(message):
+	print(message)
+	logFile.write(message + '\n')
 
 ################################## sizes ###############################	
 
@@ -16,14 +19,9 @@ def sizes(files):
 ######################### log files by extention #########################	
 
 def printLogFilesByExt(ilk, listFiles):
-	logFile.write('\nTotal amount of ' + ilk +' files is ' + 
-		str(len(listFiles)))	
-	print('Total amount of ' + ilk + ' files is ' 
+	prlog('Total amount of ' + ilk + ' files is ' 
 		+ str(len(listFiles)))
-	print('Total size of ' + ilk + ' files is ' + 
-		str('%0.2f' % sizes(listFiles)) + ' MB\n')
-	logFile.write('\nTotal size of ' + 
-		ilk + ' files is ' + 
+	prlog('Total size of ' + ilk + ' files is ' + 
 		str('%0.2f' % sizes(listFiles)) + ' MB\n')
 	logFile.write('\nList of ' + ilk + ' files:\n')	
 	if len(listFiles) < 1:
@@ -76,17 +74,12 @@ def checkAlreadySortedFiles(unsortedPhotos):
 	#number of all unsorted files (-1 because of _sync folder)
 
 	if numAlreadySorted == 0:
-		print('\nHere are ' + str(numWithoutAlreadySorted) + 
+		prlog('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files in ' + unsortedPhotos)
-		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
-			' unsorted files in ' + unsortedPhotos + '\n')
 	else:	
-		print('\nHere are ' + str(numWithoutAlreadySorted) + 
+		prlog('\nHere are ' + str(numWithoutAlreadySorted) + 
 			' unsorted files but ' + str(numAlreadySorted) 
 			+ ' already sorted in' + unsortedPhotos + '\n')
-		logFile.write('\nHere are ' + str(numWithoutAlreadySorted) + 
-			' unsorted files but ' + str(numAlreadySorted) + 
-			' already sorted in ' + unsortedPhotos + '\n')
 
 		intercept = [x for x in allUnsortedFiles if x in alreadySorted]
 
@@ -235,9 +228,7 @@ def sortByDate(extLists):
 			
 
 	if len(mismatchedFiles) > 0:
-		logFile.write('\n\nHere are ' + str(len(mismatchedFiles)) + 
-			' mismatched files:\n')
-		print('\nThere are ' + str(len(mismatchedFiles)) + 
+		prlog('\nThere are ' + str(len(mismatchedFiles)) + 
 			' mismatched files.\n' + 
 			'They will be copied in folder named "Mismatched".')
 		for file in mismatchedFiles:
@@ -258,9 +249,7 @@ def copyWithoutDate(name, files):
 	alreadySorted = syncDB['as'] #get list of already sorted files
 	
 	if os.path.exists(os.path.join(sortedPhotos, name)):
-		print('Warning: folder "' + name + 
-			'"" in destionation folder already exists')
-		logFile.write('Warning: folder "' + name + 
+		prlog('Warning: folder "' + name + 
 			'"" in destionation folder already exists')
 	else:	
 		os.mkdir(os.path.join(sortedPhotos, name))
@@ -268,7 +257,7 @@ def copyWithoutDate(name, files):
 	for item in files:
 		if os.path.exists(os.path.join(sortedPhotos, name, item)):
 			logFile.write('Error: ' + item + 
-				' already is in ' + name + '\n')
+				' is already in ' + name + '\n')
 			alreadySorted.append(item)
 			alreadyExist += 1 #count skipped files
 			continue
@@ -287,8 +276,7 @@ def copyWithoutDate(name, files):
 #############################  copyEngine  ##############################
 
 def copyEngine(filesByDate):
-	logFile.write('\nStart to copy photo and video by date...\n')
-	print('Start copy photo and video by date...')
+	prlog('\nStart to copy photo and video by date...')
 
 	global wasCopied
 	global alreadyExist
@@ -326,8 +314,7 @@ def copyEngine(filesByDate):
 				print('Now copy to ' + pathToMonth + '...')
 				logFile.write(pathToMonth + ' was created\n')
 			elif os.path.exists(pathToMonth) and len(month) != 0:
-				print('Now copy to ' + pathToMonth + '...')	
-				logFile.write('Now copy to ' + pathToMonth + '...\n')	
+				prlog('\nNow copy to ' + pathToMonth + '...')	
 			
 			#### copy files by year and month ####
 			for file in month:
@@ -335,8 +322,7 @@ def copyEngine(filesByDate):
 				newPathToFile = os.path.join(sortedPhotos, yearDictKey, 
 					monthToPrint[monthDictKey], file)
 				if os.path.exists(newPathToFile):
-					print('Warning: ' + file + ' already exists.')
-					logFile.write('Warning: ' + file + ' already exists.\n')
+					prlog('Warning: ' + file + ' already exists.')
 					alreadySorted.append(file)
 					alreadyExist += 1 #count skipped files
 				else:
@@ -347,8 +333,7 @@ def copyEngine(filesByDate):
 					logFile.write(oldPathToFile + ' copy to ' 
 						+ newPathToFile + '\n')
 
-	print('\nCopying of files is finished!!')
-	logFile.write('\nCopying of files is finished!!\n')
+	prlog('\nCopying of files is finished!!')
 
 	syncDB['as'] = alreadySorted		
 
@@ -359,24 +344,16 @@ def wasCopiedEngine():
 	global alreadyExist
 
 	if wasCopied > 0:
-		logFile.write(str(wasCopied) + ' files were copied\n')
-		print('\n' + str(wasCopied) + ' files were copied')
+		prlog('\n' + str(wasCopied) + ' files were copied')
 		if alreadyExist == 1:
-			print('There is 1 skipped file')
-			logFile.write('\nThere is 1 skipped file')
+			prlog('There is 1 skipped file')
 		elif alreadyExist > 1:
-			print(str(alreadyExist) + ' files were skipped')
-			logFile.write(str(alreadyExist) + ' files were skipped\n')
+			prlog(str(alreadyExist) + ' files were skipped')
 		elif alreadyExist == 0:
-			print('There are no skipped files')
-			logFile.write('There are no skipped files\n')
+			prlog('There are no skipped files')
 	else:
-		print('All files (' + str(alreadyExist) + ' from ' 
+		prlog('All files (' + str(alreadyExist) + ' from ' 
 			+ str(numWithoutAlreadySorted) + 
-			') already exist in destination folder')
-		logFile.write('\nAll files(' + str(alreadyExist) + 
-			' from ' + 
-			str(numWithoutAlreadySorted) + 
 			') already exist in destination folder')
 
 ########################check if folder for work exist#################
@@ -389,18 +366,14 @@ if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):
 	sortedPhotos = ('D:\\PythonPhoto\\sortedPhotos')
 	logFile.write('Path to main folders was created\n\n')
 else:
-	print(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
-		' doesn\'t exist')
-	logFile.write(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
+	prlog(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
 		' doesn\'t exist')
 	sys.exit()
 
 if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
 	unsortedPhotos = ('D:\\PythonPhoto\\unsortedPhotos')
 else:
-	print(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
-		' doesn\'t exist')
-	logFile.write(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
+	prlog(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + 
 		' doesn\'t exist')
 	sys.exit()	
 
@@ -420,9 +393,7 @@ while True:
 			logFile.write('Call sizes()\n\n')
 			logFile.write('Start to figuring out total size of unsorted files\n\n')
 			totalSize = sizes(withoutAlreadySorted)
-			logFile.write('Total size of ' + str(numWithoutAlreadySorted) + 
-			' files is ' + str("%0.2f" % totalSize) + ' MB\n\n')
-			print('\nTotal size of ' + str(numWithoutAlreadySorted) + ' files is ' 
+			prlog('\nTotal size of ' + str(numWithoutAlreadySorted) + ' files is ' 
 			+ str("%0.2f" % totalSize) + ' MB\n')
 			listByExtentions = sortByExtEngine(withoutAlreadySorted)
 			mismatchedFiles, filesByDate = sortByDate(listByExtentions)
@@ -444,11 +415,8 @@ while True:
 
 if numWithoutAlreadySorted > 0: #if there is anything to copy 
 	while True:
-		print('\n\n' + str(numWithoutAlreadySorted) + ' files are ready to copy.')
-		logFile.write('\n\n' + str(numWithoutAlreadySorted) + 
-			' files are ready to copy.')
-		print('Destination is: ' + sortedPhotos)
-		logFile.write('\nDestination is: ' + sortedPhotos)
+		prlog('\n\n' + str(numWithoutAlreadySorted) + ' files are ready to copy.')
+		prlog('Destination is: ' + sortedPhotos)
 
 		start = input('Start? (y/n)\nYour answer is: ')
 		logFile.write('Start? (y/n)\nYour answer is: ')
@@ -482,8 +450,7 @@ if numWithoutAlreadySorted > 0: #if there is anything to copy
 			print('Input error. You should type in y or n.')	
 		continue
 else:
-	print('There are no files to copy. Bye.')		
-	logFile.write('There are no files to copy. Bye.')		
+	prlog('There are no files to copy. Bye.')		
 
 syncDB.close()
 syncDB = None #workaround for some python bug with closing shelve
@@ -499,3 +466,5 @@ logFile.close()
 
 
 # ^((?:201[0-9]))-((?:0|1)(?:[0-9]))-((?:[0-3])(?:[0-9])).*$
+
+#500 > 471
