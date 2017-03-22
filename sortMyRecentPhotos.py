@@ -457,14 +457,4 @@ syncDB = None #workaround for some python bug with closing shelve
 logFile.write('\nProgram has reached end. Closing logFile.')
 logFile.close()
 
-
-#TODO compare of sorted and unsorted in order to figure out
-#if sorting went without missing any file
-
-#TODO delete unsortedFiles by users submit after checking that unsorted 
-#sorted files are equal in total quatity and size
-
-
 # ^((?:201[0-9]))-((?:0|1)(?:[0-9]))-((?:[0-3])(?:[0-9])).*$
-
-#500 > 471
