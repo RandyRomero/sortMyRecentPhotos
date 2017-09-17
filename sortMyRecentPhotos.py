@@ -8,8 +8,8 @@ import sys
 import collections
 import re
 
-list_by_extensions = []
-files_by_date = []
+was_copied = 0  # Global variables to count files in different functions
+already_exist = 0
 
 
 def prlog(message):  # function to print to console and log to file simultaneously
@@ -314,7 +314,7 @@ def copy_engine(files_to_copy_by_date):
     syncDB['as'] = already_sorted
 
 
-def was_copied_engine():  # print and long what was copied
+def print_log_what_was_copied(num_without_already_sorted):  # print and log what was already copied
     global was_copied
     global already_exist
 
@@ -330,6 +330,7 @@ def was_copied_engine():  # print and long what was copied
         prlog('All files (' + str(already_exist) + ' from ' + str(num_without_already_sorted) +
               ') already exist in destination folder')
 
+# TODO Make here function that asks user folders to work
 if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):  # check if folder for work exist
     # mind the syntax: it is 'D:/', neither 'd', nor 'D:', nor "D:/"
 
@@ -347,40 +348,10 @@ else:
     prlog(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
     sys.exit()
 
-# First menu
-logFile.write('Shall I start to analyze your files? (y/n)\n\n')
 
-while True:
-    start = input('\nShall I start to analyze your files? (y/n)\nYour answer is: ')
-    if start == 'y':
-        logFile.write('Got "y". Call sortByExtEngine()\n\n')
-        num_without_already_sorted, num_already_sorted, without_already_sorted = \
-            check_already_sorted_files()
+def start_copying_menu(num_without_already_sorted, list_by_extensions, files_by_date):
+    # Menu to ask user to start copying
 
-        if num_without_already_sorted > 0:  # figuring out total size of all unsorted files
-            logFile.write('Call sizes()\n\n')
-            logFile.write('Start to figuring out total size of unsorted files\n\n')
-            totalSize = sizes(without_already_sorted)
-            prlog('\nTotal size of ' + str(num_without_already_sorted) + ' files is '
-                  + str("%0.2f" % totalSize) + ' MB\n')
-            list_by_extensions = sort_by_ext_engine(without_already_sorted)
-            mismatched_files, files_by_date = sort_by_date(list_by_extensions)
-            list_by_extensions['mismatched'] = mismatched_files
-            break
-        else:
-            print('There is nothing to sort out.')
-            break
-    elif start == 'n':
-        logFile.write('Got "n". Exit script.\n\n')
-        print('Goodbye')
-        sys.exit()
-    else:
-        logFile.write('Got wrong input. Ask again...\n\n')
-        print('Input error. You should type in y or n')
-        continue
-
-# Menu to ask user to start copying
-if num_without_already_sorted > 0:  # if there is anything to copy
     while True:
         prlog('\n\n' + str(num_without_already_sorted) + ' files are ready to copy.')
         prlog('Destination is: ' + sorted_photos)
@@ -389,15 +360,13 @@ if num_without_already_sorted > 0:  # if there is anything to copy
         logFile.write('Start? (y/n)\nYour answer is: ')
         if start == 'y':
             logFile.write('Got "y".\n\n')
-            was_copied = 0  # Global variables to count files in different functions
-            already_exist = 0
 
             # Part for copying files regardless of date
-            numOtherFiles = (len(list_by_extensions['PNG']) +
-                             len(list_by_extensions['other']) + len(list_by_extensions['mismatched']))
+            num_other_files = (len(list_by_extensions['PNG']) +
+                               len(list_by_extensions['other']) + len(list_by_extensions['mismatched']))
 
             # Call copy_without_date_engine for specific file lists if them isn't empty
-            if numOtherFiles > 0:
+            if num_other_files > 0:
                 for k, v in list_by_extensions.items():
                     if k == 'JPG' or k == 'video' or len(v) < 1:
                         continue
@@ -406,7 +375,7 @@ if num_without_already_sorted > 0:  # if there is anything to copy
                         copy_without_date(k, v)
 
             copy_engine(files_by_date)
-            was_copied_engine()
+            print_log_what_was_copied(num_without_already_sorted)
             break
         elif start == 'n':
             logFile.write('Got "n". Exit script.\n\n')
@@ -416,8 +385,40 @@ if num_without_already_sorted > 0:  # if there is anything to copy
             logFile.write('Got wrong input. Ask again...\n\n')
             print('Input error. You should type in y or n.')
         continue
-else:
-    prlog('There are no files to copy. Bye.')
+
+
+def start_analyzing_menu():
+    # Menu that start (or not) analyzing and copying
+    logFile.write('Shall I start to analyze your files? (y/n)\n\n')
+    while True:
+        start = input('\nShall I start to analyze your files? (y/n)\nYour answer is: ')
+        if start == 'y':
+            # Get list of files that have not been sorted out yet
+            num_without_already_sorted, num_already_sorted_files, without_already_sorted = \
+                check_already_sorted_files()
+
+            if num_without_already_sorted > 0:  # figuring out total size of all unsorted files
+                logFile.write('Call sizes()\n\n')
+                logFile.write('Start to figuring out total size of unsorted files\n\n')
+                total_size = sizes(without_already_sorted)
+                prlog('\nTotal size of ' + str(num_without_already_sorted) + ' files is '
+                      + str("%0.2f" % total_size) + ' MB\n')
+                list_by_extensions = sort_by_ext_engine(without_already_sorted)
+                mismatched_files, files_by_date = sort_by_date(list_by_extensions)
+                list_by_extensions['mismatched'] = mismatched_files
+                start_copying_menu(num_without_already_sorted, list_by_extensions, files_by_date)
+                break
+            else:
+                print('There is nothing to sort out.')
+                break
+        elif start == 'n':
+            logFile.write('Got "n". Exit script.\n\n')
+            print('Goodbye')
+            sys.exit()
+        else:
+            logFile.write('Got wrong input. Ask again...\n\n')
+            print('Input error. You should type in y or n')
+            continue
 
 syncDB.close()
 syncDB = None  # Workaround for some python bug with closing shelve
