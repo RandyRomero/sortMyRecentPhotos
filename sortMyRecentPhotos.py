@@ -10,6 +10,10 @@ import re
 
 was_copied = 0  # Global variables to count files in different functions
 already_exist = 0
+logFile = open('logFile.txt', 'w')
+logFile.write('Program started. Log file was created.\n\n')
+source_folder = ''
+destination_folder = ''
 
 
 def prlog(message):  # function to print to console and log to file simultaneously
@@ -17,18 +21,42 @@ def prlog(message):  # function to print to console and log to file simultaneous
     logFile.write(message + '\n')
 
 
+def let_user_choose_folders():
+    global source_folder
+    global destination_folder
+    while True:
+        source_folder = input('Please, type in full path of folder with unsorted photos:\n')
+        if os.path.exists(source_folder):
+            prlog('Got it!')
+            logFile.write('Source folder is ' + source_folder)
+        else:
+            prlog('This folder doesn\'t exist. Choose another one.')
+            continue
+
+        destination_folder = input('Please, type in full path of folder where to put sorted photos:\n')
+        if os.path.exists(destination_folder):
+            prlog('Got it!')
+            logFile.write('Destination folder is ' + destination_folder)
+            break
+        else:
+            prlog('This folder doesn\'t exist. Choose another one.')
+            continue
+
+let_user_choose_folders()
+
+
 def sizes(files):
 
     total_size = 0
     for file in files:
-        size = os.path.getsize(os.path.join(unsorted_photos, file))
+        size = os.path.getsize(os.path.join(source_folder, file))
         total_size += size
     return total_size / 1024 / 1024
 
 
 def print_log_files_by_ext(ilk, list_files):  # log files by extension
-    prlog('Total amount of ' + ilk + ' files is ' + str(len(list_files)))
-    prlog('Total size of ' + ilk + ' files is ' + str('%0.2f' % sizes(list_files)) + ' MB\n')
+    prlog('Total amount of ' + ilk + ' files is ' + str(len(list_files)) + '.')
+    prlog('Total size of ' + ilk + ' files is ' + str('%0.2f' % sizes(list_files)) + ' MB.\n')
     logFile.write('\nList of ' + ilk + ' files:\n')
     if len(list_files) < 1:
         logFile.write('empty\n')
@@ -41,33 +69,33 @@ def check_already_sorted_files():
     # Check if there are files that were already sorted in order not to sort them again
     global syncDB
 
-    if os.path.exists(os.path.join(unsorted_photos, '_sync')):  # if there is a DB in folder where are files to sort out
-        logFile.write(os.path.join(unsorted_photos, '_sync') + ' exists.\n')
-        syncDB = shelve.open(os.path.join(unsorted_photos, '_sync', 'filesyncDB'))  # open DB
-        try:  # extract list of file names that were already sorted last time from shelve
-            already_sorted = syncDB['as']
+    if os.path.exists(os.path.join(source_folder, '_sync')):  # if there is a DB in folder where are files to sort out
+        logFile.write(os.path.join(source_folder, '_sync') + ' exists.\n')
+        syncDB = shelve.open(os.path.join(source_folder, '_sync', 'filesyncDB'))  # open DB
+        try:  # load from shelve list of file names that have been ever sorted in this specific source folder
+            sorted_before = syncDB['as']
             logFile.write('List of files has been already in the DB\n')
         except KeyError:
             # There is no list of previously sorted files, create it
             print('Database doesn\'t have list of previously sorted files')
-            already_sorted = []
-            syncDB['as'] = already_sorted
+            sorted_before = []
+            syncDB['as'] = sorted_before
 
     else:  # if there is no folder with DB in folder of unsorted files
-        logFile.write(os.path.join(unsorted_photos, '_sync') + ' doesn\'t exist\n')
-        os.mkdir(os.path.join(unsorted_photos, '_sync'))  # create folder
-        syncDB = shelve.open(os.path.join(unsorted_photos, '_sync', 'filesyncDB'))  # create DB
-        already_sorted = []
-        syncDB['as'] = already_sorted
+        logFile.write(os.path.join(source_folder, '_sync') + ' doesn\'t exist\n')
+        os.mkdir(os.path.join(source_folder, '_sync'))  # create folder
+        syncDB = shelve.open(os.path.join(source_folder, '_sync', 'filesyncDB'))  # create DB
+        sorted_before = []
+        syncDB['as'] = sorted_before
 
-    logFile.write('Getting list with names of files in ' + unsorted_photos + '\n\n')
+    logFile.write('Getting list with names of files in ' + source_folder + '\n\n')
 
-    already_sorted = syncDB['as']
-    all_unsorted_files = os.listdir(unsorted_photos)
+    sorted_before = syncDB['as']
+    all_unsorted_files = os.listdir(source_folder)
 
     # create new list by 'list comprehension'. If item from all_unsorted_files
     # not in alreadySorted it appends to without_already_sorted
-    without_already_sorted_files = [x for x in all_unsorted_files if x not in already_sorted]
+    without_already_sorted_files = [x for x in all_unsorted_files if x not in sorted_before]
 
     # get number of already sorted files
     num_already_sorted = len(all_unsorted_files) - len(without_already_sorted_files)
@@ -76,15 +104,16 @@ def check_already_sorted_files():
     num_without_already_sorted_files = len(without_already_sorted_files) - 1
 
     if num_already_sorted == 0:
-        prlog('\nHere are ' + str(num_without_already_sorted_files) + ' unsorted files in ' + unsorted_photos)
+        prlog('\nHere are ' + str(num_without_already_sorted_files) + ' unsorted files in ' + source_folder)
     else:
         prlog('\nHere are ' + str(num_without_already_sorted_files) + ' unsorted files but ' + str(num_already_sorted)
-              + ' already sorted in' + unsorted_photos + '\n')
+              + ' already sorted in' + source_folder + '\n')
 
-        intercept = [x for x in all_unsorted_files if x in already_sorted]
+        # Figure out files that were sorted last time and were not removed from source folder
+        already_sorted_not_removed_yet = [x for x in all_unsorted_files if x in sorted_before]
 
         logFile.write('Here is list of already sorted files: \n')
-        for item in intercept:  # TODO change name of variable to more meaningful
+        for item in already_sorted_not_removed_yet:
             logFile.write(item + '\n')
 
     return num_without_already_sorted_files, num_already_sorted, without_already_sorted_files
@@ -236,24 +265,24 @@ def copy_without_date(name, files):
 
     already_sorted = syncDB['as']  # get list of already sorted files
 
-    if os.path.exists(os.path.join(sorted_photos, name)):
+    if os.path.exists(os.path.join(destination_folder, name)):
         prlog('Warning: folder "' + name + '"" in destination folder already exists')
     else:
-        os.mkdir(os.path.join(sorted_photos, name))
+        os.mkdir(os.path.join(destination_folder, name))
     for item in files:
-        if os.path.exists(os.path.join(sorted_photos, name, item)):
+        if os.path.exists(os.path.join(destination_folder, name, item)):
             logFile.write('Error: ' + item + ' is already in ' + name + '\n')
             already_sorted.append(item)
             already_exist += 1  # count skipped files
             continue
         else:
-            shutil.copy2(os.path.join(unsorted_photos, item), os.path.join(sorted_photos, name, item))  # copy file
+            shutil.copy2(os.path.join(source_folder, item), os.path.join(destination_folder, name, item))  # copy file
             was_copied += 1
             if item not in already_sorted:
                 already_sorted.append(item)
             # log which and where to file was copied
-            logFile.write(os.path.join(unsorted_photos, item) + ' copy to ' + os.path.join(sorted_photos, name, item) +
-                          '\n')
+            logFile.write(os.path.join(source_folder, item) + ' copy to '
+                          + os.path.join(destination_folder, name, item) + '\n')
 
     syncDB['as'] = already_sorted
 
@@ -281,12 +310,12 @@ def copy_engine(files_to_copy_by_date):
                       '12': '[12] December'}
 
     for year_dict_key, year in files_to_copy_by_date.items():  # make folder for year if it hasn't existed yet
-        if not os.path.exists(os.path.join(sorted_photos, year_dict_key)):
-            os.mkdir(os.path.join(sorted_photos, year_dict_key))
-            logFile.write(os.path.join(sorted_photos, year_dict_key) + ' was created\n')
+        if not os.path.exists(os.path.join(destination_folder, year_dict_key)):
+            os.mkdir(os.path.join(destination_folder, year_dict_key))
+            logFile.write(os.path.join(destination_folder, year_dict_key) + ' was created\n')
 
         for month_dict_key, month in year.items():  # make folder for month if it hasn't existed yet
-            path_to_month = os.path.join(sorted_photos, year_dict_key, month_to_print[month_dict_key])
+            path_to_month = os.path.join(destination_folder, year_dict_key, month_to_print[month_dict_key])
             if not os.path.exists(path_to_month) and len(month) != 0:
                 os.mkdir(path_to_month)
                 print('Now copy to ' + path_to_month + '...')
@@ -296,8 +325,8 @@ def copy_engine(files_to_copy_by_date):
 
             # copy files by year and month
             for file in month:
-                old_path_to_file = os.path.join(unsorted_photos, file)
-                new_path_to_file = os.path.join(sorted_photos, year_dict_key, month_to_print[month_dict_key], file)
+                old_path_to_file = os.path.join(source_folder, file)
+                new_path_to_file = os.path.join(destination_folder, year_dict_key, month_to_print[month_dict_key], file)
                 if os.path.exists(new_path_to_file):
                     prlog('Warning: ' + file + ' already exists.')
                     already_sorted.append(file)
@@ -330,31 +359,13 @@ def print_log_what_was_copied(num_without_already_sorted):  # print and log what
         prlog('All files (' + str(already_exist) + ' from ' + str(num_without_already_sorted) +
               ') already exist in destination folder')
 
-# TODO Make here function that asks user folders to work
-if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos')):  # check if folder for work exist
-    # mind the syntax: it is 'D:/', neither 'd', nor 'D:', nor "D:/"
-
-    logFile = open('D:\\PythonPhoto\\sortedPhotos\\logFile.txt', 'w')
-    logFile.write('Program started. Log file was created.\n\n')
-    sorted_photos = 'D:\\PythonPhoto\\sortedPhotos'
-    logFile.write('Path to main folders was created\n\n')
-else:
-    prlog(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
-    sys.exit()
-
-if os.path.exists(os.path.join('D:/', 'PythonPhoto', 'unsortedPhotos')):
-    unsorted_photos = 'D:\\PythonPhoto\\unsortedPhotos'
-else:
-    prlog(os.path.join('D:/', 'PythonPhoto', 'sortedPhotos') + ' doesn\'t exist')
-    sys.exit()
-
 
 def start_copying_menu(num_without_already_sorted, list_by_extensions, files_by_date):
     # Menu to ask user to start copying
 
     while True:
         prlog('\n\n' + str(num_without_already_sorted) + ' files are ready to copy.')
-        prlog('Destination is: ' + sorted_photos)
+        prlog('Destination is: ' + destination_folder)
 
         start = input('Start? (y/n)\nYour answer is: ')
         logFile.write('Start? (y/n)\nYour answer is: ')
@@ -419,6 +430,8 @@ def start_analyzing_menu():
             logFile.write('Got wrong input. Ask again...\n\n')
             print('Input error. You should type in y or n')
             continue
+
+start_analyzing_menu()
 
 syncDB.close()
 syncDB = None  # Workaround for some python bug with closing shelve
