@@ -10,15 +10,8 @@ import re
 
 was_copied = 0  # Global variables to count files in different functions
 already_exist = 0
-logFile = open('logFile.txt', 'w')
-logFile.write('Program started. Log file was created.\n\n')
 source_folder = ''
 destination_folder = ''
-
-
-def prlog(message):  # function to print to console and log to file simultaneously
-    print(message)
-    logFile.write(message + '\n')
 
 
 def let_user_choose_folders():
@@ -27,22 +20,29 @@ def let_user_choose_folders():
     while True:
         source_folder = input('Please, type in full path of folder with unsorted photos:\n')
         if os.path.exists(source_folder):
-            prlog('Got it!')
-            logFile.write('Source folder is ' + source_folder)
+            print('Got it!')
         else:
-            prlog('This folder doesn\'t exist. Choose another one.')
+            print('This folder doesn\'t exist. Choose another one.')
             continue
 
         destination_folder = input('Please, type in full path of folder where to put sorted photos:\n')
         if os.path.exists(destination_folder):
-            prlog('Got it!')
-            logFile.write('Destination folder is ' + destination_folder)
+            print('Got it!')
+            log = open(os.path.join(destination_folder, 'log_file.txt'), 'w')
+            log.write('Source folder is ' + source_folder)
+            log.write('Destination folder is ' + destination_folder)
             break
         else:
-            prlog('This folder doesn\'t exist. Choose another one.')
+            print('This folder doesn\'t exist. Choose another one.')
             continue
+    return log
 
-let_user_choose_folders()
+log_file = let_user_choose_folders()
+
+
+def prlog(message):  # function to print to console and log to file simultaneously
+    print(message)
+    log_file.write(message + '\n')
 
 
 def sizes(files):
@@ -54,15 +54,15 @@ def sizes(files):
     return total_size / 1024 / 1024
 
 
-def print_log_files_by_ext(ilk, list_files):  # log files by extension
+def print_and_log_files_by_ext(ilk, list_files):  # log files by extension
     prlog('Total amount of ' + ilk + ' files is ' + str(len(list_files)) + '.')
     prlog('Total size of ' + ilk + ' files is ' + str('%0.2f' % sizes(list_files)) + ' MB.\n')
-    logFile.write('\nList of ' + ilk + ' files:\n')
+    log_file.write('\nList of ' + ilk + ' files:\n')
     if len(list_files) < 1:
-        logFile.write('empty\n')
+        log_file.write('empty\n')
     else:
         for file in list_files:
-            logFile.write(file + '\n')
+            log_file.write(file + '\n')
 
 
 def check_already_sorted_files():
@@ -70,11 +70,11 @@ def check_already_sorted_files():
     global syncDB
 
     if os.path.exists(os.path.join(source_folder, '_sync')):  # if there is a DB in folder where are files to sort out
-        logFile.write(os.path.join(source_folder, '_sync') + ' exists.\n')
+        log_file.write(os.path.join(source_folder, '_sync') + ' exists.\n')
         syncDB = shelve.open(os.path.join(source_folder, '_sync', 'filesyncDB'))  # open DB
         try:  # load from shelve list of file names that have been ever sorted in this specific source folder
             sorted_before = syncDB['as']
-            logFile.write('List of files has been already in the DB\n')
+            log_file.write('List of files has been already in the DB\n')
         except KeyError:
             # There is no list of previously sorted files, create it
             print('Database doesn\'t have list of previously sorted files')
@@ -82,13 +82,13 @@ def check_already_sorted_files():
             syncDB['as'] = sorted_before
 
     else:  # if there is no folder with DB in folder of unsorted files
-        logFile.write(os.path.join(source_folder, '_sync') + ' doesn\'t exist\n')
+        log_file.write(os.path.join(source_folder, '_sync') + ' doesn\'t exist\n')
         os.mkdir(os.path.join(source_folder, '_sync'))  # create folder
         syncDB = shelve.open(os.path.join(source_folder, '_sync', 'filesyncDB'))  # create DB
         sorted_before = []
         syncDB['as'] = sorted_before
 
-    logFile.write('Getting list with names of files in ' + source_folder + '\n\n')
+    log_file.write('Getting list with names of files in ' + source_folder + '\n\n')
 
     sorted_before = syncDB['as']
     all_unsorted_files = os.listdir(source_folder)
@@ -112,9 +112,9 @@ def check_already_sorted_files():
         # Figure out files that were sorted last time and were not removed from source folder
         already_sorted_not_removed_yet = [x for x in all_unsorted_files if x in sorted_before]
 
-        logFile.write('Here is list of already sorted files: \n')
+        log_file.write('Here is list of already sorted files: \n')
         for item in already_sorted_not_removed_yet:
-            logFile.write(item + '\n')
+            log_file.write(item + '\n')
 
     return num_without_already_sorted_files, num_already_sorted, without_already_sorted_files
 
@@ -123,7 +123,7 @@ def sort_by_ext_engine(without_already_sorted_files):  # sort out files by exten
 
     jpg_list, png_list, video_list, other_list = ([] for i in range(4))  # the way to declare multiple lists
 
-    logFile.write('Start to sort files by extension...\n\n')
+    log_file.write('Start to sort files by extension...\n\n')
     for item in without_already_sorted_files:
         if item.endswith('.PNG') or item.endswith('.png'):
             png_list.append(item)
@@ -145,7 +145,7 @@ def sort_by_ext_engine(without_already_sorted_files):  # sort out files by exten
 
     # Prints and logs to file list and amount of files by their extension
     for k, v in ext_lists.items():
-        print_log_files_by_ext(k, v)
+        print_and_log_files_by_ext(k, v)
 
     return ext_lists
 
@@ -156,7 +156,7 @@ def sort_by_date(ext_lists):
     # to list
 
     year_list = []
-    logFile.write('\nCompile regex for dates in files...\n')
+    log_file.write('\nCompile regex for dates in files...\n')
     date_regex = re.compile(r''' 
         ^((?:201[0-9]))- 		# year - Group 1
         ((?:[0-1])(?:\d))-		# month - Group 2
@@ -215,8 +215,8 @@ def sort_by_date(ext_lists):
             if mo is not None:
                 # Add file to corresponding location e.g.: year 2016 month january
                 year_dict[mo.group(1)][mo.group(2)].append(item)
-                logFile.write('\nFile ' + item + ' was added to ' + 'year_dict[' + mo.group(1) + '][' +
-                              mo.group(2) + ']')
+                log_file.write('\nFile ' + item + ' was added to ' + 'year_dict[' + mo.group(1) + '][' +
+                               mo.group(2) + ']')
             else:
                 mismatched_files.append(item)
 
@@ -240,16 +240,16 @@ def sort_by_date(ext_lists):
             if len(monthDictValue) != 0:
                 print(str(len(monthDictValue)) + ' file was created in ' + month_to_print[monthDictKey] +
                       ' of ' + yearDictKey + '.')
-                logFile.write('\n\n' + str(len(monthDictValue)) + ' file was created in ' +
-                              month_to_print[monthDictKey] + ' of ' + yearDictKey + ': \n')
+                log_file.write('\n\n' + str(len(monthDictValue)) + ' file was created in ' +
+                               month_to_print[monthDictKey] + ' of ' + yearDictKey + ': \n')
             for file in monthDictValue:
-                logFile.write(file + '\n')
+                log_file.write(file + '\n')
 
     if len(mismatched_files) > 0:
         prlog('\nThere are ' + str(len(mismatched_files)) + ' mismatched files.\n' +
               'They will be copied in folder named "Mismatched".')
         for file in mismatched_files:  # message about mismatched files
-            logFile.write(file + '\n')
+            log_file.write(file + '\n')
 
     return mismatched_files, year_dict
 
@@ -260,7 +260,7 @@ def copy_without_date(name, files):
     global was_copied
     global already_exist
 
-    logFile.write('Copy ' + name + ' files...\n\n')
+    log_file.write('Copy ' + name + ' files...\n\n')
     print('Copy ' + name + ' files...\n')
 
     already_sorted = syncDB['as']  # get list of already sorted files
@@ -271,7 +271,7 @@ def copy_without_date(name, files):
         os.mkdir(os.path.join(destination_folder, name))
     for item in files:
         if os.path.exists(os.path.join(destination_folder, name, item)):
-            logFile.write('Error: ' + item + ' is already in ' + name + '\n')
+            log_file.write('Error: ' + item + ' is already in ' + name + '\n')
             already_sorted.append(item)
             already_exist += 1  # count skipped files
             continue
@@ -281,8 +281,8 @@ def copy_without_date(name, files):
             if item not in already_sorted:
                 already_sorted.append(item)
             # log which and where to file was copied
-            logFile.write(os.path.join(source_folder, item) + ' copy to '
-                          + os.path.join(destination_folder, name, item) + '\n')
+            log_file.write(os.path.join(source_folder, item) + ' copy to '
+                           + os.path.join(destination_folder, name, item) + '\n')
 
     syncDB['as'] = already_sorted
 
@@ -312,14 +312,14 @@ def copy_engine(files_to_copy_by_date):
     for year_dict_key, year in files_to_copy_by_date.items():  # make folder for year if it hasn't existed yet
         if not os.path.exists(os.path.join(destination_folder, year_dict_key)):
             os.mkdir(os.path.join(destination_folder, year_dict_key))
-            logFile.write(os.path.join(destination_folder, year_dict_key) + ' was created\n')
+            log_file.write(os.path.join(destination_folder, year_dict_key) + ' was created\n')
 
         for month_dict_key, month in year.items():  # make folder for month if it hasn't existed yet
             path_to_month = os.path.join(destination_folder, year_dict_key, month_to_print[month_dict_key])
             if not os.path.exists(path_to_month) and len(month) != 0:
                 os.mkdir(path_to_month)
                 print('Now copy to ' + path_to_month + '...')
-                logFile.write(path_to_month + ' was created\n')
+                log_file.write(path_to_month + ' was created\n')
             elif os.path.exists(path_to_month) and len(month) != 0:
                 prlog('\nNow copy to ' + path_to_month + '...')
 
@@ -336,7 +336,7 @@ def copy_engine(files_to_copy_by_date):
                     was_copied += 1
                     if file not in already_sorted:
                         already_sorted.append(file)
-                    logFile.write(old_path_to_file + ' copy to ' + new_path_to_file + '\n')
+                    log_file.write(old_path_to_file + ' copy to ' + new_path_to_file + '\n')
 
     prlog('\nCopying of files is finished!!')
 
@@ -368,9 +368,9 @@ def start_copying_menu(num_without_already_sorted, list_by_extensions, files_by_
         prlog('Destination is: ' + destination_folder)
 
         start = input('Start? (y/n)\nYour answer is: ')
-        logFile.write('Start? (y/n)\nYour answer is: ')
+        log_file.write('Start? (y/n)\nYour answer is: ')
         if start == 'y':
-            logFile.write('Got "y".\n\n')
+            log_file.write('Got "y".\n\n')
 
             # Part for copying files regardless of date
             num_other_files = (len(list_by_extensions['PNG']) +
@@ -382,25 +382,25 @@ def start_copying_menu(num_without_already_sorted, list_by_extensions, files_by_
                     if k == 'JPG' or k == 'video' or len(v) < 1:
                         continue
                     else:
-                        logFile.write('\ncopyWithoutDate was invoked\n')
+                        log_file.write('\ncopyWithoutDate was invoked\n')
                         copy_without_date(k, v)
 
             copy_engine(files_by_date)
             print_log_what_was_copied(num_without_already_sorted)
             break
         elif start == 'n':
-            logFile.write('Got "n". Exit script.\n\n')
+            log_file.write('Got "n". Exit script.\n\n')
             print('Goodbye')
             sys.exit()
         else:
-            logFile.write('Got wrong input. Ask again...\n\n')
+            log_file.write('Got wrong input. Ask again...\n\n')
             print('Input error. You should type in y or n.')
         continue
 
 
 def start_analyzing_menu():
     # Menu that start (or not) analyzing and copying
-    logFile.write('Shall I start to analyze your files? (y/n)\n\n')
+    log_file.write('Shall I start to analyze your files? (y/n)\n\n')
     while True:
         start = input('\nShall I start to analyze your files? (y/n)\nYour answer is: ')
         if start == 'y':
@@ -409,8 +409,8 @@ def start_analyzing_menu():
                 check_already_sorted_files()
 
             if num_without_already_sorted > 0:  # figuring out total size of all unsorted files
-                logFile.write('Call sizes()\n\n')
-                logFile.write('Start to figuring out total size of unsorted files\n\n')
+                log_file.write('Call sizes()\n\n')
+                log_file.write('Start to figuring out total size of unsorted files\n\n')
                 total_size = sizes(without_already_sorted)
                 prlog('\nTotal size of ' + str(num_without_already_sorted) + ' files is '
                       + str("%0.2f" % total_size) + ' MB\n')
@@ -423,11 +423,11 @@ def start_analyzing_menu():
                 print('There is nothing to sort out.')
                 break
         elif start == 'n':
-            logFile.write('Got "n". Exit script.\n\n')
+            log_file.write('Got "n". Exit script.\n\n')
             print('Goodbye')
             sys.exit()
         else:
-            logFile.write('Got wrong input. Ask again...\n\n')
+            log_file.write('Got wrong input. Ask again...\n\n')
             print('Input error. You should type in y or n')
             continue
 
@@ -435,7 +435,7 @@ start_analyzing_menu()
 
 syncDB.close()
 syncDB = None  # Workaround for some python bug with closing shelve
-logFile.write('\nProgram has reached end. Closing logFile.')
-logFile.close()
+log_file.write('\nProgram has reached end. Closing logFile.')
+log_file.close()
 
 # ^((?:201[0-9]))-((?:0|1)(?:[0-9]))-((?:[0-3])(?:[0-9])).*$
