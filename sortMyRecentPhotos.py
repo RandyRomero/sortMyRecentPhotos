@@ -55,7 +55,7 @@ def sizes(files):
 
 
 def print_and_log_files_by_ext(ilk, list_files):  # log files by extension
-    prlog('Total amount of ' + ilk + ' files is ' + str(len(list_files)) + '.')
+    prlog('Total number of ' + ilk + ' files is ' + str(len(list_files)) + '.')
     prlog('Total size of ' + ilk + ' files is ' + str('%0.2f' % sizes(list_files)) + ' MB.\n')
     log_file.write('\nList of ' + ilk + ' files:\n')
     if len(list_files) < 1:
@@ -107,7 +107,7 @@ def check_already_sorted_files():
         prlog('\nHere are ' + str(num_without_already_sorted_files) + ' unsorted files in ' + source_folder)
     else:
         prlog('\nHere are ' + str(num_without_already_sorted_files) + ' unsorted files but ' + str(num_already_sorted)
-              + ' already sorted in' + source_folder + '\n')
+              + ' already sorted in ' + source_folder + '\n')
 
         # Figure out files that were sorted last time and were not removed from source folder
         already_sorted_not_removed_yet = [x for x in all_unsorted_files if x in sorted_before]
@@ -137,7 +137,7 @@ def sort_by_ext_engine(without_already_sorted_files):  # sort out files by exten
             other_list.append(item)
 
     # Use OrderedDict to preserve insertion order.
-    # Python 3.6 default dict can do it from box but I want to keep compatibility with older versions
+    # Python 3.6 default dict can do it out of box but I want to keep compatibility with older versions
     ext_lists = collections.OrderedDict([('JPG', jpg_list),
                                         ('PNG', png_list),
                                         ('video', video_list),
@@ -166,16 +166,6 @@ def sort_by_date(ext_lists):
         ''',
                             re.VERBOSE)
 
-    for k, v in ext_lists.items():
-        if k == 'PNG' or k == 'already sorted':  # k is name of list
-                continue
-        for item in v:  # v is list of files
-            mo = date_regex.search(item)
-            if mo is not None:
-                year_num = mo.group(1)  # return year from file name
-                if year_num not in year_list:
-                    year_list.append(year_num)
-
     # Now we need a dictionary in order to get specific group of month
     # by passing a year
     year_dict = collections.OrderedDict([])
@@ -201,19 +191,21 @@ def sort_by_date(ext_lists):
 
     mismatched_files = []  # for files that do not match regex
 
-    # Create dictionary key for every necessary year and tie its with
-    # value that's a new DEEPCOPY of twelve_month. Without deepcopy we get
-    # same lists of files in every year
-    for year in year_list:
-        year_dict['{}'.format(year)] = copy.deepcopy(twelve_month)
-
+    # Figure out date of photo, create dict with corresponding year and add this photo inside
+    # this year and corresponding month
     for k, v in ext_lists.items():
-        if k == 'PNG' or k == 'already sorted':  # k is name of extension
+        if k == 'PNG' or k == 'already sorted':  # k is name of list
                 continue
         for item in v:  # v is list of files
             mo = date_regex.search(item)
             if mo is not None:
-                # Add file to corresponding location e.g.: year 2016 month january
+                year_num = mo.group(1)  # return year from file name
+                if year_num not in year_list:
+                    year_list.append(year_num)
+                    # Create dictionary key for every necessary year and tie its with
+                    # value that's a new DEEPCOPY of twelve_month. Without deepcopy we get
+                    # same lists of files in every year
+                    year_dict['{}'.format(year_num)] = copy.deepcopy(twelve_month)
                 year_dict[mo.group(1)][mo.group(2)].append(item)
                 log_file.write('\nFile ' + item + ' was added to ' + 'year_dict[' + mo.group(1) + '][' +
                                mo.group(2) + ']')
