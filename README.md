@@ -20,13 +20,13 @@ you can run this script in order to:
 - Get total number and size of video files
 - Get total number and size of other files
 - Get all your jpg photos sorted out by month and year, for example:
-    - 12 file was created in April of 2016.
-    - 10 file was created in December of 2016.
-    - 34 file was created in October of 2017.
-    - 453 file was created in November of 2017.
-    - 10 file was created in February of 2009.
-    - 6 file was created in April of 2012.
-    - 10 file was created in May of 2015.
+    - 12 file(s) were created in April of 2016.
+    - 10 file(s) were created in December of 2016.
+    - 34 file(s) were created in October of 2017.
+    - 453 file(s) were created in November of 2017.
+    - 10 file(s) were created in February of 2009.
+    - 6 file(s) were created in April of 2012.
+    - 10 file(s) were created in May of 2015.
 
 - Copy your files in a new directory (chosen by you). 
 Inside this directory will be folder name by aforementioned types (jpg, png, video, mismatched).

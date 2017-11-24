@@ -260,10 +260,11 @@ def sort_by_date(ext_lists):
     for yearDictKey, yearDictValue in year_dict.items():
         for monthDictKey, monthDictValue in yearDictValue.items():
             if len(monthDictValue) != 0:
-                print(str(len(monthDictValue)) + ' file was created in ' + month_to_print[monthDictKey] +
-                      ' of ' + yearDictKey + '.')
-                log_file.write('\n\n' + str(len(monthDictValue)) + ' file was created in ' +
-                               month_to_print[monthDictKey] + ' of ' + yearDictKey + ': \n')
+                print('{} file(s) were created in {} of {} .'.format(str(len(monthDictValue)),
+                                                                  month_to_print[monthDictKey], yearDictKey))
+                log_file.write('\n\n{} file(s) were created in {} of {}: \n'.format(str(len(monthDictValue)),
+                                                                                 month_to_print[monthDictKey],
+                                                                                 yearDictKey))
             for file in monthDictValue:
                 log_file.write(file + '\n')
 
