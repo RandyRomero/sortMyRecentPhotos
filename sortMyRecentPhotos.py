@@ -177,7 +177,7 @@ def sort_by_date(ext_lists):
             # same lists of files in every year
             year_dict['{}'.format(file_year)] = copy.deepcopy(twelve_month)
         year_dict[file_year][file_month].append(filename)
-        log_file.write('\nFile {} was added to year_dict[{}][{}]'.format(filename, file_year, file_month))
+        log_file.write('\nFile {} was added to year_dict[{}][{}]\n'.format(filename, file_year, file_month))
 
     year_list = []
     log_file.write('\nCompile regex for dates in files...\n')
