@@ -1,6 +1,8 @@
 #!python3 
 
 import copy
+from datetime import datetime
+import exifread
 import os
 import shelve
 import shutil
@@ -151,9 +153,31 @@ def sort_by_ext_engine(without_already_sorted_files):  # sort out files by exten
 
 
 def sort_by_date(ext_lists):
-    # First we need to know home many years we have. That's why we
-    # send files through regex - to get all possible years and store them
-    # to list
+    """
+    Sort photos with regex by there date and put them in structure of dicts and lists that represent years and months
+
+    :param ext_lists: ordered dict where key is a file extension or type of file,
+    value is array of all file names (without paths) or files of that type or with this extension
+    :return: list of files that were nit sorted; dict where key is a year and value is another dict with twelve month
+    as a lists with names of files inside them
+    """
+
+    def add_photo_to_dict(filename, file_year, file_month):
+        """
+        Add photo to special structure
+        :param filename: name of file like '2017-11-21 09-34-09.JPG' - string
+        :param file_year: year like '2015' - integer
+        :param file_month: month like
+        :return: nothing
+        """
+        if file_year not in year_list:
+            year_list.append(file_year)
+            # Create dictionary key for every necessary year and tie its with
+            # value that's a new DEEPCOPY of twelve_month. Without deepcopy we get
+            # same lists of files in every year
+            year_dict['{}'.format(file_year)] = copy.deepcopy(twelve_month)
+        year_dict[file_year][file_month].append(filename)
+        log_file.write('\nFile {} was added to year_dict[{}][{}]'.format(filename, file_year, file_month))
 
     year_list = []
     log_file.write('\nCompile regex for dates in files...\n')
@@ -197,20 +221,26 @@ def sort_by_date(ext_lists):
         if k == 'PNG' or k == 'already sorted':  # k is name of list
                 continue
         for item in v:  # v is list of files
+            # Figure out date of photo by it's name and regex
             mo = date_regex.search(item)
             if mo is not None:
-                year_num = mo.group(1)  # return year from file name
-                if year_num not in year_list:
-                    year_list.append(year_num)
-                    # Create dictionary key for every necessary year and tie its with
-                    # value that's a new DEEPCOPY of twelve_month. Without deepcopy we get
-                    # same lists of files in every year
-                    year_dict['{}'.format(year_num)] = copy.deepcopy(twelve_month)
-                year_dict[mo.group(1)][mo.group(2)].append(item)
-                log_file.write('\nFile ' + item + ' was added to ' + 'year_dict[' + mo.group(1) + '][' +
-                               mo.group(2) + ']')
+                photo_year = mo.group(1)  # return year from photo's name
+                photo_month = mo.group(2)  # return month from photo's name
+                add_photo_to_dict(item, photo_year, photo_month)
+                log_file.write('Date of {} was figured out by regex.'.format(item))
             else:
-                mismatched_files.append(item)
+                # Figure out date of photo by data from EXIF
+                file = open(os.path.join(source_folder, item), 'rb')
+                tags = exifread.process_file(file, details=False)
+                if tags.get('EXIF DateTimeOriginal') is not None:
+                    date_string = str(tags['EXIF DateTimeOriginal'])
+                    date = datetime.strptime(date_string, '%Y:%m:%d %H:%M:%S')
+                    photo_year = str(date.year)
+                    photo_month = str(date.month).rjust(2, '0')
+                    add_photo_to_dict(item, photo_year, photo_month)
+                    log_file.write('Date of {} was figured out by EXIF.'.format(item))
+                else:
+                    mismatched_files.append(item)
 
     month_to_print = {'01': 'January',
                       '02': 'February',
