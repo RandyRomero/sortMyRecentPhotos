@@ -1,4 +1,8 @@
-#!python3 
+#!python3
+# -*- coding: utf-8 -*-
+
+# TODO Add description
+# TODO Fix bugs with order in which script shows ans copies folder by year
 
 import copy
 from datetime import datetime
@@ -126,12 +130,13 @@ def sort_by_ext_engine(without_already_sorted_files):  # sort out files by exten
     jpg_list, png_list, video_list, other_list = ([] for i in range(4))  # the way to declare multiple lists
 
     log_file.write('Start to sort files by extension...\n\n')
+    # TODO Refactor this block below
     for item in without_already_sorted_files:
         if item.endswith('.PNG') or item.endswith('.png'):
             png_list.append(item)
         elif item.endswith('.JPG') or item.endswith('.jpg') or item.endswith('.JPEG'):
             jpg_list.append(item)
-        elif item.endswith('.MP4') or item.endswith('.3GP'):
+        elif item.endswith('.MP4') or item.endswith('.3GP') or item.endswith('.MOV'):
             video_list.append(item)
         elif item == '_sync':  # skip folder with database
             continue
@@ -218,12 +223,12 @@ def sort_by_date(ext_lists):
     # Figure out date of photo, create dict with corresponding year and add this photo inside
     # this year and corresponding month
     for k, v in ext_lists.items():
-        if k == 'PNG' or k == 'already sorted':  # k is name of list
+        if k == 'PNG' or k == 'other':  # k is name of list
                 continue
         for item in v:  # v is list of files
             # Figure out date of photo by it's name and regex
             mo = date_regex.search(item)
-            if mo is not None:
+            if mo:
                 photo_year = mo.group(1)  # return year from photo's name
                 photo_month = mo.group(2)  # return month from photo's name
                 add_photo_to_dict(item, photo_year, photo_month)
@@ -240,6 +245,8 @@ def sort_by_date(ext_lists):
                     add_photo_to_dict(item, photo_year, photo_month)
                     log_file.write('Date of {} was figured out by EXIF.'.format(item))
                 else:
+                    if k == 'video':  # if there is video without date in its name do not add it in mismatched
+                        continue
                     mismatched_files.append(item)
 
     month_to_print = {'01': 'January',
@@ -257,14 +264,14 @@ def sort_by_date(ext_lists):
 
     print('\nSorted out by date:')
     # print out and log list of photos and videos by month and year
-    for yearDictKey, yearDictValue in year_dict.items():
-        for monthDictKey, monthDictValue in yearDictValue.items():
+    for yearDictKey in sorted(year_dict):
+        for monthDictKey, monthDictValue in year_dict[yearDictKey].items():
             if len(monthDictValue) != 0:
-                print('{} file(s) were created in {} of {} .'.format(str(len(monthDictValue)),
-                                                                  month_to_print[monthDictKey], yearDictKey))
+                print('{} file(s) were created in {} of {}.'.format(str(len(monthDictValue)),
+                                                                    month_to_print[monthDictKey], yearDictKey))
                 log_file.write('\n\n{} file(s) were created in {} of {}: \n'.format(str(len(monthDictValue)),
-                                                                                 month_to_print[monthDictKey],
-                                                                                 yearDictKey))
+                                                                                    month_to_print[monthDictKey],
+                                                                                    yearDictKey))
             for file in monthDictValue:
                 log_file.write(file + '\n')
 
@@ -332,12 +339,14 @@ def copy_engine(files_to_copy_by_date):
                       '11': '[11] November',
                       '12': '[12] December'}
 
-    for year_dict_key, year in files_to_copy_by_date.items():  # make folder for year if it hasn't existed yet
+    # TODO Sort dict keys first
+    for year_dict_key in sorted(files_to_copy_by_date):  # make folder for year if it hasn't existed yet
         if not os.path.exists(os.path.join(destination_folder, year_dict_key)):
             os.mkdir(os.path.join(destination_folder, year_dict_key))
             log_file.write(os.path.join(destination_folder, year_dict_key) + ' was created\n')
 
-        for month_dict_key, month in year.items():  # make folder for month if it hasn't existed yet
+        # make folder for month if it hasn't existed yet
+        for month_dict_key, month in files_to_copy_by_date[year_dict_key].items():
             path_to_month = os.path.join(destination_folder, year_dict_key, month_to_print[month_dict_key])
             if not os.path.exists(path_to_month) and len(month) != 0:
                 os.mkdir(path_to_month)
@@ -437,10 +446,10 @@ def start_analyzing_menu():
                 total_size = sizes(without_already_sorted)
                 prlog('\nTotal size of ' + str(num_without_already_sorted) + ' files is '
                       + str("%0.2f" % total_size) + ' MB\n')
-                list_by_extensions = sort_by_ext_engine(without_already_sorted)
-                mismatched_files, files_by_date = sort_by_date(list_by_extensions)
-                list_by_extensions['mismatched'] = mismatched_files
-                start_copying_menu(num_without_already_sorted, list_by_extensions, files_by_date)
+                dict_by_extensions = sort_by_ext_engine(without_already_sorted)
+                mismatched_files, files_by_date = sort_by_date(dict_by_extensions)
+                dict_by_extensions['mismatched'] = mismatched_files
+                start_copying_menu(num_without_already_sorted, dict_by_extensions, files_by_date)
                 break
             else:
                 print('There is nothing to sort out.')
