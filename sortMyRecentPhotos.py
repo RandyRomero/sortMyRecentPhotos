@@ -1,8 +1,10 @@
 #!python3
 # -*- coding: utf-8 -*-
 
-# TODO Add description
-# TODO Fix bugs with order in which script shows ans copies folder by year
+# Written by Aleksandr Mikheev
+# https://github.com/RandyRomero/sortMyRecentPhotos
+# Script that can sort out your photos and put it in folders by year and month.
+# Full information via link above.
 
 import copy
 from datetime import datetime
@@ -130,13 +132,15 @@ def sort_by_ext_engine(without_already_sorted_files):  # sort out files by exten
     jpg_list, png_list, video_list, other_list = ([] for i in range(4))  # the way to declare multiple lists
 
     log_file.write('Start to sort files by extension...\n\n')
-    # TODO Refactor this block below
+
+    video_ext_tuple = ('.MP4', '.3GP', '.MOV', '.mp4', '.3gp', '.mov')
     for item in without_already_sorted_files:
-        if item.endswith('.PNG') or item.endswith('.png'):
+        item_lower = item.lower()
+        if item_lower.endswith('.png'):
             png_list.append(item)
-        elif item.endswith('.JPG') or item.endswith('.jpg') or item.endswith('.JPEG'):
+        elif item_lower.endswith('.jpg') or item_lower.endswith('.jpeg'):
             jpg_list.append(item)
-        elif item.endswith('.MP4') or item.endswith('.3GP') or item.endswith('.MOV'):
+        elif item_lower.endswith(video_ext_tuple):
             video_list.append(item)
         elif item == '_sync':  # skip folder with database
             continue
@@ -339,7 +343,6 @@ def copy_engine(files_to_copy_by_date):
                       '11': '[11] November',
                       '12': '[12] December'}
 
-    # TODO Sort dict keys first
     for year_dict_key in sorted(files_to_copy_by_date):  # make folder for year if it hasn't existed yet
         if not os.path.exists(os.path.join(destination_folder, year_dict_key)):
             os.mkdir(os.path.join(destination_folder, year_dict_key))
