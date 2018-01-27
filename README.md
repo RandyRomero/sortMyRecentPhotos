@@ -1,4 +1,4 @@
-# sortMyRecentPhotos
+# sort_my_recent_photos
 Small script to sort photo from folder by date and extension.
 
 Written by Aleksandr Mikheev
