@@ -1,6 +1,3 @@
-#!python3
-# -*- coding: utf-8 -*-
-
 # Written by Aleksandr Mikheev
 # https://github.com/RandyRomero/sortMyRecentPhotos
 # Script that can sort out your photos and put it in folders by year and month.
@@ -9,7 +6,8 @@
 import copy
 from datetime import datetime
 import exifread
-import os
+from os import mkdir, listdir
+from os.path import exists, isfile, join, getsize
 import shelve
 import shutil
 import sys
@@ -27,16 +25,16 @@ def let_user_choose_folders():
     global destination_folder
     while True:
         source_folder = input('Please, type in full path of folder with unsorted photos:\n')
-        if os.path.exists(source_folder):
+        if exists(source_folder):
             print('Got it!')
         else:
             print('This folder doesn\'t exist. Choose another one.')
             continue
 
         destination_folder = input('Please, type in full path of folder where to put sorted photos:\n')
-        if os.path.exists(destination_folder):
+        if exists(destination_folder):
             print('Got it!')
-            log = open(os.path.join(destination_folder, 'log_file.txt'), 'w')
+            log = open(join(destination_folder, 'log_file.txt'), 'w')
             log.write('Source folder is ' + source_folder)
             log.write('Destination folder is ' + destination_folder)
             break
@@ -57,7 +55,7 @@ def sizes(files):
 
     total_size = 0
     for file in files:
-        size = os.path.getsize(os.path.join(source_folder, file))
+        size = getsize(join(source_folder, file))
         total_size += size
     return total_size / 1024 / 1024
 
@@ -77,9 +75,9 @@ def check_already_sorted_files():
     # Check if there are files that were already sorted in order not to sort them again
     global syncDB
 
-    if os.path.exists(os.path.join(source_folder, '_sync')):  # if there is a DB in folder where are files to sort out
-        log_file.write(os.path.join(source_folder, '_sync') + ' exists.\n')
-        syncDB = shelve.open(os.path.join(source_folder, '_sync', 'filesyncDB'))  # open DB
+    if exists(join(source_folder, '_sync')):  # if there is a DB in folder where are files to sort out
+        log_file.write(join(source_folder, '_sync') + ' exists.\n')
+        syncDB = shelve.open(join(source_folder, '_sync', 'filesyncDB'))  # open DB
         try:  # load from shelve list of file names that have been ever sorted in this specific source folder
             sorted_before = syncDB['as']
             log_file.write('List of files has been already in the DB\n')
@@ -90,16 +88,16 @@ def check_already_sorted_files():
             syncDB['as'] = sorted_before
 
     else:  # if there is no folder with DB in folder of unsorted files
-        log_file.write(os.path.join(source_folder, '_sync') + ' doesn\'t exist\n')
-        os.mkdir(os.path.join(source_folder, '_sync'))  # create folder
-        syncDB = shelve.open(os.path.join(source_folder, '_sync', 'filesyncDB'))  # create DB
+        log_file.write(join(source_folder, '_sync') + ' doesn\'t exist\n')
+        mkdir(join(source_folder, '_sync'))  # create folder
+        syncDB = shelve.open(join(source_folder, '_sync', 'filesyncDB'))  # create DB
         sorted_before = []
         syncDB['as'] = sorted_before
 
     log_file.write('Getting list with names of files in ' + source_folder + '\n\n')
 
     sorted_before = syncDB['as']
-    all_unsorted_files = os.listdir(source_folder)
+    all_unsorted_files = [file for file in listdir(source_folder) if isfile(join(source_folder, file))]
 
     # create new list by 'list comprehension'. If item from all_unsorted_files
     # not in alreadySorted it appends to without_already_sorted
@@ -109,7 +107,7 @@ def check_already_sorted_files():
     num_already_sorted = len(all_unsorted_files) - len(without_already_sorted_files)
 
     # number of all unsorted files (-1 because of _sync folder)
-    num_without_already_sorted_files = len(without_already_sorted_files) - 1
+    num_without_already_sorted_files = len(without_already_sorted_files)
 
     if num_already_sorted == 0:
         prlog('\nHere are ' + str(num_without_already_sorted_files) + ' unsorted files in ' + source_folder)
@@ -239,7 +237,7 @@ def sort_by_date(ext_lists):
                 log_file.write('Date of {} was figured out by regex.'.format(item))
             else:
                 # Figure out date of photo by data from EXIF
-                file = open(os.path.join(source_folder, item), 'rb')
+                file = open(join(source_folder, item), 'rb')
                 tags = exifread.process_file(file, details=False)
                 if tags.get('EXIF DateTimeOriginal') is not None:
                     date_string = str(tags['EXIF DateTimeOriginal'])
@@ -299,24 +297,24 @@ def copy_without_date(name, files):
 
     already_sorted = syncDB['as']  # get list of already sorted files
 
-    if os.path.exists(os.path.join(destination_folder, name)):
+    if exists(join(destination_folder, name)):
         prlog('Warning: folder "' + name + '"" in destination folder already exists')
     else:
-        os.mkdir(os.path.join(destination_folder, name))
+        mkdir(join(destination_folder, name))
     for item in files:
-        if os.path.exists(os.path.join(destination_folder, name, item)):
+        if exists(join(destination_folder, name, item)):
             log_file.write('Error: ' + item + ' is already in ' + name + '\n')
             already_sorted.append(item)
             already_exist += 1  # count skipped files
             continue
         else:
-            shutil.copy2(os.path.join(source_folder, item), os.path.join(destination_folder, name, item))  # copy file
+            shutil.copy2(join(source_folder, item), join(destination_folder, name, item))  # copy file
             was_copied += 1
             if item not in already_sorted:
                 already_sorted.append(item)
             # log which and where to file was copied
-            log_file.write(os.path.join(source_folder, item) + ' copy to '
-                           + os.path.join(destination_folder, name, item) + '\n')
+            log_file.write(join(source_folder, item) + ' copy to '
+                           + join(destination_folder, name, item) + '\n')
 
     syncDB['as'] = already_sorted
 
@@ -344,25 +342,25 @@ def copy_engine(files_to_copy_by_date):
                       '12': '[12] December'}
 
     for year_dict_key in sorted(files_to_copy_by_date):  # make folder for year if it hasn't existed yet
-        if not os.path.exists(os.path.join(destination_folder, year_dict_key)):
-            os.mkdir(os.path.join(destination_folder, year_dict_key))
-            log_file.write(os.path.join(destination_folder, year_dict_key) + ' was created\n')
+        if not exists(join(destination_folder, year_dict_key)):
+            mkdir(join(destination_folder, year_dict_key))
+            log_file.write(join(destination_folder, year_dict_key) + ' was created\n')
 
         # make folder for month if it hasn't existed yet
         for month_dict_key, month in files_to_copy_by_date[year_dict_key].items():
-            path_to_month = os.path.join(destination_folder, year_dict_key, month_to_print[month_dict_key])
-            if not os.path.exists(path_to_month) and len(month) != 0:
-                os.mkdir(path_to_month)
+            path_to_month = join(destination_folder, year_dict_key, month_to_print[month_dict_key])
+            if not exists(path_to_month) and len(month) != 0:
+                mkdir(path_to_month)
                 print('Now copy to ' + path_to_month + '...')
                 log_file.write(path_to_month + ' was created\n')
-            elif os.path.exists(path_to_month) and len(month) != 0:
+            elif exists(path_to_month) and len(month) != 0:
                 prlog('\nNow copy to ' + path_to_month + '...')
 
             # copy files by year and month
             for file in month:
-                old_path_to_file = os.path.join(source_folder, file)
-                new_path_to_file = os.path.join(destination_folder, year_dict_key, month_to_print[month_dict_key], file)
-                if os.path.exists(new_path_to_file):
+                old_path_to_file = join(source_folder, file)
+                new_path_to_file = join(destination_folder, year_dict_key, month_to_print[month_dict_key], file)
+                if exists(new_path_to_file):
                     prlog('Warning: ' + file + ' already exists.')
                     already_sorted.append(file)
                     already_exist += 1  # count skipped files
